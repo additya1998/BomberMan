@@ -1,21 +1,24 @@
 from config import *
 from board import Board
+from bomber import Bomber
 from threading import Timer
 from random import randint
-import time
+import time, getch, sys
 from os import system
+
 
 class enemy:
 	def __init__(self):
 		self.X = 0
 		self.Y = 0
-		self.health = 1
-		self.fire = 1
+		self.health = 0
+		self.speed = 0
+		self.alive = 1
 
 
 	def setPosition(self, board):
 		(self.X, self.Y) = board.getRandomEmpty()
-		board.setEnemy(self.X, self.Y)
+		board.setEnemy(self.X, self.Y, 'E')
 
 class enemies:
 	def __init__(self):
@@ -46,18 +49,21 @@ class enemies:
 				idx = randint(0, len(arr) - 1)
 				board.vacate(X, Y)
 				(x, y) = arr[idx]
-				board.setEnemy(X + x, Y + y)
+				board.setEnemy(X + x, Y + y, 'E')
 				self.allEnemies[i].X = X + x
 				self.allEnemies[i].Y = Y + y
-		board.show()
 
 board = Board(BOARD_HEIGHT, BOARD_WIDTH, COUNT_BRICKS)
 board.initialise()
 
 listOfEnemies = enemies()
+listOfEnemies.move(board)
 
-for i in range(0, 10):
-	system("tput reset")
+bomber = Bomber()
+board.show()
+
+while True:
+	x = int(input())
 	listOfEnemies.move(board)
-	time.sleep(2)
-
+	bomber.move(board, x)
+	board.show()
