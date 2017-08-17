@@ -1,4 +1,4 @@
-from config import BOARD_WIDTH, BOARD_HEIGHT, OBJECT_WIDTH, OBJECT_HEIGHT
+from random import randint
 
 class Board:
 
@@ -34,7 +34,34 @@ class Board:
 				s = s + str(self.board[i][j])
 			print(s)
 
+	def isEmpty(self, X, Y):
+		if X < 0 or Y < 0:
+			return 0
+		valid = 1
+		for i in range(0, 2):
+			for j in range(0, 4):
+				if X + i >= self.BOARD_HEIGHT:
+					return 0
+				elif Y + j >= self.BOARD_WIDTH:
+					return 0;
+				elif self.board[X + i][Y + j] != ' ':
+					return 0
+		return 1
 
-board = Board(BOARD_HEIGHT, BOARD_WIDTH)
-board.initialise()
-board.show()
+	def vacate(self, X, Y):
+		for i in range(0, 2):
+			for j in range(0, 4):
+				self.board[X + i][Y + j] = ' '
+
+	def getRandomEmpty(self):
+		arr = []
+		for i in range(2, self.BOARD_HEIGHT, 4):
+			for j in range(2, self.BOARD_WIDTH - 2, 4):
+				if self.isEmpty(i, j):
+					arr.append((i, j))
+		return arr[randint(0, len(arr) - 1)]
+
+	def setEnemy(self, X, Y):
+		for i in range(0, 2):
+			for j in range(0, 4):
+				self.board[X + i][Y + j] = 'E'
