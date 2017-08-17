@@ -1,4 +1,4 @@
-from config import BOARD_WIDTH, BOARD_HEIGHT, OBJECT_WIDTH, OBJECT_HEIGHT
+from config import *
 from board import Board
 from threading import Timer
 from random import randint
@@ -12,49 +12,52 @@ class enemy:
 		self.health = 1
 		self.fire = 1
 
+
 	def setPosition(self, board):
 		(self.X, self.Y) = board.getRandomEmpty()
 		board.setEnemy(self.X, self.Y)
 
-def show():
-	for i in range(0, len(enemies)):
-		arr = []
-		X = enemies[i].X
-		Y = enemies[i].Y
-		if board.isEmpty(X - 2, Y):
-			arr.append((-2, 0))
-		if board.isEmpty(X, Y + 4):
-			arr.append((0, 4))
-		if board.isEmpty(X + 2, Y):
-			arr.append((2, 0))
-		if board.isEmpty(X, Y - 4):
-			arr.append((0, -4))
-		
-		if len(arr) == 0:
-			continue
-		else:
-			idx = randint(0, len(arr) - 1)
-			board.vacate(X, Y)
-			(x, y) = arr[idx]
-			board.setEnemy(X + x, Y + y)
-			enemies[i].X = X + x
-			enemies[i].Y = Y + y
-	board.show()
+class enemies:
+	def __init__(self):
+		allEnemies = []
+		for i in range(0, ENEMEIES):
+			newEnemy = enemy()
+			newEnemy.setPosition(board)
+			allEnemies.append(newEnemy)
+		self.allEnemies = allEnemies
 
-enemies = []
-board = Board(BOARD_HEIGHT, BOARD_WIDTH)
+	def move(self, board):
+		for i in range(0, len(self.allEnemies)):
+			arr = []
+			X = self.allEnemies[i].X
+			Y = self.allEnemies[i].Y
+			if board.isEmpty(X - 2, Y):
+				arr.append((-2, 0))
+			if board.isEmpty(X, Y + 4):
+				arr.append((0, 4))
+			if board.isEmpty(X + 2, Y):
+				arr.append((2, 0))
+			if board.isEmpty(X, Y - 4):
+				arr.append((0, -4))
+			
+			if len(arr) == 0:
+				continue
+			else:
+				idx = randint(0, len(arr) - 1)
+				board.vacate(X, Y)
+				(x, y) = arr[idx]
+				board.setEnemy(X + x, Y + y)
+				self.allEnemies[i].X = X + x
+				self.allEnemies[i].Y = Y + y
+		board.show()
+
+board = Board(BOARD_HEIGHT, BOARD_WIDTH, COUNT_BRICKS)
 board.initialise()
 
-for i in range(0, 10):
-	newEnemy = enemy()
-	newEnemy.setPosition(board)
-	enemies.append(newEnemy)
-	# print(type(newEnemy))
-
-# print(type(enemies[0]))
+listOfEnemies = enemies()
 
 for i in range(0, 10):
 	system("tput reset")
-	show()
+	listOfEnemies.move(board)
 	time.sleep(2)
 
