@@ -71,12 +71,16 @@ class Game:
 			self.bomb.active = 0
 
 			# UP
+			f = 1
 			for i in range(1, length):
+				if f == 0:
+					break
 				(X, Y) = (self.bomb.X - i * OBJECT_HEIGHT, self.bomb.Y)
 				if self.board.isValid(X, Y):
 					for brick in self.bricks:
 						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 							brick.isDestroyed = 1
+							f = 0
 							break
 					for enemy in self.enemies:
 						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
@@ -86,12 +90,16 @@ class Game:
 						self.bomber.health = self.bomber.health - 1		
 
 			# DOWN
+			f = 1
 			for i in range(0, length):
+				if f == 0:
+					break
 				(X, Y) = (self.bomb.X + i * OBJECT_HEIGHT, self.bomb.Y)
 				if self.board.isValid(X, Y):
 					for brick in self.bricks:
 						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 							brick.isDestroyed = 1
+							f = 0
 							break
 					for enemy in self.enemies:
 						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
@@ -101,12 +109,16 @@ class Game:
 						self.bomber.health = self.bomber.health - 1		
 
 			# LEFT
+			f = 1
 			for i in range(0, length):
+				if f == 0:
+					break
 				(X, Y) = (self.bomb.X, self.bomb.Y - i * OBJECT_WIDTH)
 				if self.board.isValid(X, Y):
 					for brick in self.bricks:
 						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 							brick.isDestroyed = 1
+							f = 0
 							break
 					for enemy in self.enemies:
 						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
@@ -116,12 +128,16 @@ class Game:
 						self.bomber.health = self.bomber.health - 1		
 
 			# RIGHT
+			f = 1
 			for i in range(0, length):
+				if f == 0:
+					break
 				(X, Y) = (self.bomb.X, self.bomb.Y + i * OBJECT_WIDTH)
 				if self.board.isValid(X, Y):
 					for brick in self.bricks:
 						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 							brick.isDestroyed = 1
+							f = 0
 							break
 					for enemy in self.enemies:
 						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
@@ -154,14 +170,14 @@ while True:
 	current_time = time()
 	seconds = current_time - previous_bomber
 
-	if seconds > BOMBER_TIME:
-		if INPUT.kbhit() :
+	if INPUT.kbhit():
+		if seconds > BOMBER_TIME:
 			x = INPUT.getch()
-			INPUT.flush()
 			if x == 'w'or x == 'a' or x == 's' or x == 'd':
 				game.moveBomber(x)
 			elif x == 'b':
 				game.plantBomb()
+		INPUT.flush()
 		previous_bomber = current_time
 
 	seconds = current_time - previous_enemy
