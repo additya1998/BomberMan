@@ -9,15 +9,29 @@ class Board:
 		self.BOARD_HEIGHT = BOARD_HEIGHT
 		self.BOARD_WIDTH = BOARD_WIDTH
 
-	def reset(self, bomber, enemies = [], bricks = []):
+	def isValid(self, X, Y):
+		if X < 0 or Y < 0:
+			return 0
+		if X + OBJECT_HEIGHT >= self.BOARD_HEIGHT or Y + OBJECT_WIDTH >= self.BOARD_WIDTH:
+			return 0
+		return 1
+
+	def reset(self, bomber, enemies, bricks, bomb):
 		self.board = [[' ' for j in range(0, BOARD_WIDTH)] for i in range(0, BOARD_HEIGHT)]
 		self.setWalls()
+
+		if bomb:
+			if bomb.active:
+				for i in range(OBJECT_HEIGHT):
+					for j in range(OBJECT_WIDTH):
+						self.board[bomb.X + i][bomb.Y + j] = bomb.timeLeft
+
 		for enemy in enemies:
 			for i in range(OBJECT_HEIGHT):
 				for j in range(OBJECT_WIDTH):
 					if enemy.health == 1:
 						self.board[enemy.X + i][enemy.Y + j] = 'E'
-					else:
+					elif enemy.health == 2:
 						self.board[enemy.X + i][enemy.Y + j] = 'R'
 
 		for brick in bricks:
@@ -30,7 +44,6 @@ class Board:
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
 				self.board[bomber.X + i][bomber.Y + j] = 'B'
-
 
 
 
@@ -57,31 +70,6 @@ class Board:
 			self.board[i][0] = self.board[i][1] = self.board[i][2] = self.board[i][3] = 'X'
 			self.board[i][self.BOARD_WIDTH - 1] = self.board[i][self.BOARD_WIDTH - 2] = self.board[i][self.BOARD_WIDTH - 3] = self.board[i][self.BOARD_WIDTH - 4] = 'X'
 
-	# def placeBomber(self, bomber):
-	# 	for i in range(OBJECT_HEIGHT):
-	# 		for j in range(OBJECT_WIDTH):
-	# 			self.board[bomber.X + i][bomber.Y + j] = 'B'
-
-	# def placeEnemy(self, enemy):
-	# 	if self.board[enemy.X][enemy.Y] != 'B':
-	# 		for i in range(OBJECT_HEIGHT):
-	# 			for j in range(OBJECT_WIDTH):
-	# 				# if self.board[ene]
-	# 				if enemy.health == 1:
-	# 					self.board[enemy.X + i][enemy.Y + j] = 'E'
-	# 				else:
-	# 					self.board[enemy.X + i][enemy.Y + j] = 'R'
-
-	# def placeBrick(self, brick):
-	# 	for i in range(OBJECT_HEIGHT):
-	# 		for j in range(OBJECT_WIDTH):
-	# 			self.board[brick.X + i][brick.Y + j] = '/'
-
-
-	# def initialise(self):
-	# 	self.setWalls();
-	# 	self.setBricks();
-
 	def show(self):
 		system("tput reset")
 		for i in range(0, self.BOARD_HEIGHT):
@@ -103,28 +91,17 @@ class Board:
 				else:
 					s = s + x
 			print(s)
+		print("\n")
 
 	def isEmpty(self, X, Y):
-		if X < 0 or Y < 0:
+		if self.isValid(X, Y) == 0:
 			return 0
-		valid = 1
+
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
-				if X + i >= self.BOARD_HEIGHT:
+				if self.board[X + i][Y + j] == 'X' or self.board[X +i][Y + j] == '/':
 					return 0
-				elif Y + j >= self.BOARD_WIDTH:
-					return 0;
-				elif self.board[X + i][Y + j] == 'X' or self.board[X +i][Y + j] == '/':
-					return 0
+				if self.board[X + i][Y + j] == 1 or self.board[X + i][Y + j] == 2 or self.board[X + i][Y + j] == 3:
+					return 0 
 		return 1
 
-	# def vacate(self, X, Y):
-	# 	for i in range(OBJECT_HEIGHT):
-	# 		for j in range(OBJECT_WIDTH):
-	# 			self.board[X + i][Y + j] = ' '
-
-
-	# def setEnemy(self, X, Y, character):
-	# 	for i in range(0, 2):
-	# 		for j in range(0, 4):
-	# 			self.board[X + i][Y + j] = character
