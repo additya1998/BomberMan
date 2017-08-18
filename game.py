@@ -44,33 +44,23 @@ class Game:
 
 	def moveEnemies(self):
 		for i in range(len(self.enemies)):
-			self.enemies[i].move(self.bomber, self.enemies, self.bricks, self.board)
+			self.enemies[i].move(self.board)
+			self.board.reset(self.bomber, self.enemies, self.bricks)
+			
 		self.board.show()
 
 	def moveBomber(self, direction):
-		(X, Y) = (self.bomber.X, self.bomber.Y)
-		if direction == 'w' or direction == 'W':
-			if self.board.isEmpty(X - OBJECT_HEIGHT, Y):
-				self.bomber.X = self.bomber.X - OBJECT_HEIGHT
-
-		elif direction == 'a' or direction == 'A':
-			if self.board.isEmpty(X, Y - OBJECT_WIDTH):
-				self.bomber.Y = self.bomber.Y - OBJECT_WIDTH
-
-		elif direction == 's' or direction == 'S':
-			if self.board.isEmpty(X + OBJECT_HEIGHT, Y):
-				self.bomber.X = self.bomber.X + OBJECT_HEIGHT
-
-		elif direction == 'd' or direction == 'D':
-			if self.board.isEmpty(X, Y + OBJECT_WIDTH):
-				self.bomber.Y = self.bomber.Y + OBJECT_WIDTH
-		
-		elif direction == 'b' or direction == 'B':
-			pass
+		self.bomber.moveBomber(direction, self.board)
 		self.board.reset(self.bomber, self.enemies, self.bricks)
 
+	def checkSameCell(self):
+		for enemy in self.enemies:
+			if enemy.X == self.bomber.X and enemy.Y == self.bomber.Y:
+				return 1
+		return 0
 
-game = Game(1)
+
+game = Game(2)
 
 previous_bomber = time()
 previous_enemy = time()
@@ -86,13 +76,19 @@ while True:
 		if INPUT.kbhit() :
 			x = INPUT.getch()
 			INPUT.flush()
-			game.moveBomber(x)
+			if x == 'w'or x == 'a' or x == 's' or x == 'd':
+				game.moveBomber(x)
 		previous_bomber = current_time
 
 	seconds = current_time - previous_enemy
 	if seconds > ENEMY_TIME:
 		game.moveEnemies()
 		previous_enemy = current_time
+
+	if game.checkSameCell():
+		system("tput reset")
+		print("Game Over")
+		break
 
 	
 

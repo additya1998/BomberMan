@@ -33,6 +33,7 @@ class Board:
 
 
 
+
 	def getRandomEmpty(self):
 		arr = []
 		for i in range(0, self.BOARD_HEIGHT, 4):

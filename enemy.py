@@ -14,7 +14,7 @@ class Enemy(Person):
 		self.health = health
 		self.speed = speed
 
-	def move(self, bomber, enemies, bricks, board):
+	def move(self, board):
 
 		(X, Y) = (self.X, self.Y)
 		arr = []
@@ -38,7 +38,6 @@ class Enemy(Person):
 			(x, y) = idx
 			self.X = self.X + x
 			self.Y = self.Y + y
-			board.reset(bomber, enemies, bricks)
 
 
 # class Enemies:
