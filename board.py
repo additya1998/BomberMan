@@ -58,10 +58,6 @@ class Board:
 				left = bomb.length
 				right = bomb.length
 
-				# print(bomb.X, bomb.Y)
-				# print(bomb.X, bomb.Y - OBJECT_HEIGHT)
-				# print(self.board[bomb.X][bomb.Y - OBJECT_HEIGHT])
-
 				for i in range(0, bomb.length + 1):
 					if self.isValid(bomb.X, bomb.Y - OBJECT_WIDTH * i) == 0:
 						left = i - 1
@@ -147,7 +143,7 @@ class Board:
 			self.board[i][0] = self.board[i][1] = self.board[i][2] = self.board[i][3] = 'X'
 			self.board[i][self.BOARD_WIDTH - 1] = self.board[i][self.BOARD_WIDTH - 2] = self.board[i][self.BOARD_WIDTH - 3] = self.board[i][self.BOARD_WIDTH - 4] = 'X'
 
-	def show(self, level, lives, timeLeft):
+	def show(self, level, lives, timeLeft, score):
 		system("tput reset")
 		for i in range(0, self.BOARD_HEIGHT):
 			s = ""
@@ -175,6 +171,7 @@ class Board:
 		print("CURRENT LEVEL : " + str(level))
 		print("LIVES LEFT : " + str(lives))
 		print("TIME LEFT : " + str(timeLeft))
+		print("SCORE : " + str(score))
 
 	def isEmpty(self, X, Y):
 		if self.isValid(X, Y) == 0:

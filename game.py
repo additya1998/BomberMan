@@ -14,9 +14,10 @@ from time import time, sleep
 
 
 class Game:
-	def __init__(self, level, lives, gameTime):
+	def __init__(self, level, lives, gameTime, previousScore):
 
 		levelDetails = LEVELS[level]
+		self.score = previousScore
 		self.level = level
 		self.lives = lives
 		self.gameTime = gameTime
@@ -54,7 +55,7 @@ class Game:
 			self.board.reset(self.bomber, self.enemies, self.bricks, '')
 
 		# exit(0)
-		self.board.show(self.level, self.lives, self.gameTime)
+		self.board.show(self.level, self.lives, self.gameTime, self.score)
 		# print(levelDetails[0], levelDetails[1], len(self.enemies))
 
 	def updateTime(self):
@@ -71,7 +72,7 @@ class Game:
 				enemy.prevTime = current_time
 				self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb)
 			
-		self.board.show(self.level, self.lives, self.gameTime)
+		self.board.show(self.level, self.lives, self.gameTime, self.score)
 
 	def moveBomber(self, direction):
 		self.bomber.moveBomber(direction, self.board)
@@ -89,10 +90,10 @@ class Game:
 	def checkBlast(self):
 		self.bomb.checkBlast()
 		if self.bomb.showBlast and self.bomb.active:
-			self.bomb.updateBomb(self.bomber, self.board, self.bricks, self.enemies)
+			self.score = self.bomb.updateBomb(self.bomber, self.board, self.bricks, self.enemies, self.score)
 			self.bomb.active = 0
 		self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb)
-		# self.board.show(self.level, self.lives, self.gameTime)
+		# self.board.show(self.level, self.lives, self.gameTime, self.score)
 		# exit(0)
 
 	def checkEnd(self):
@@ -115,8 +116,8 @@ class Game:
 # x = Game(4)
 # exit(0)
 
-def startNewGame(currentLevel, gamesLeft):
-	game = Game(currentLevel, gamesLeft, GAME_LENGTH)
+def startNewGame(currentLevel, gamesLeft, previousScore):
+	game = Game(currentLevel, gamesLeft, GAME_LENGTH, previousScore)
 
 	previous_bomber = time()
 	previous_enemy = time()
@@ -151,7 +152,7 @@ def startNewGame(currentLevel, gamesLeft):
 		game.checkBlast()
 		game.updateTime()
 
-		game.board.show(game.level, game.lives, game.gameTime)
+		game.board.show(game.level, game.lives, game.gameTime, game.score)
 
 		gameStatus = game.checkEnd()
 		
@@ -160,14 +161,14 @@ def startNewGame(currentLevel, gamesLeft):
 
 		elif gameStatus == 1:
 			gamesLeft = gamesLeft - 1
-			return (0, -1)
+			return (0, -1, game.score + game.gameTime)
 		
 		else:
 			currentLevel = currentLevel + 1
-			return (1, 1)
+			return (1, 1, game.score + game.gameTime)
 
 
-(gamesLeft, currentLevel) = (3, 0)
+(gamesLeft, currentLevel, initialScore) = (3, 5, 0)
 while True:
 	if currentLevel > 5:
 		print("YOU WIN!")
@@ -178,59 +179,9 @@ while True:
 		break
 
 	else:
-		(X, Y) = startNewGame(currentLevel, gamesLeft)
+		(X, Y, SCORE) = startNewGame(currentLevel, gamesLeft, initialScore)
 		currentLevel = currentLevel + X
 		gamesLeft = gamesLeft + Y
+		initialScore = SCORE
 
 								
-# game = Game(0)
-
-# previous_bomber = time()
-# previous_enemy = time()
-
-# INPUT = Input()
-
-# while True:
-	
-# 	sleep(0.09)
-
-# 	current_time = time()
-# 	seconds = current_time - previous_bomber
-
-# 	if INPUT.kbhit():
-# 		if seconds > BOMBER_TIME:
-# 			x = INPUT.getch()
-# 			if x == 'w'or x == 'a' or x == 's' or x == 'd':
-# 				game.moveBomber(x)
-# 			elif x == 'b':
-# 				game.plantBomb()
-# 			elif x == 'n':
-# 				# print(currentLevel)
-# 				currentLevel = currentLevel + 1
-# 				# print(currentLevel)
-# 				# exit(0)
-# 				break
-# 		INPUT.flush()
-# 		previous_bomber = current_time
-
-# 	game.moveEnemies()
-# 	game.checkSameCell()
-# 	game.checkBlast()
-	
-# 	game.board.show(game.level, game.lives, game.gameTime)
-# 	# game.board.reset(game.bomber, game.enemies, game.bricks, game.bomb)
-
-# 	gameStatus = game.checkEnd()
-	
-# 	if gameStatus == 0:
-# 		pass
-
-# 	elif gameStatus == 1:
-# 		gamesLeft = gamesLeft - 1
-# 		break
-	
-# 	else:
-# 		currentLevel = currentLevel + 1
-# 		break
-
-						

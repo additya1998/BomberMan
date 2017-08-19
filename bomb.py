@@ -2,7 +2,7 @@ from time import time
 from config import *
 
 class Bomb:
-	def __init__(self, X, Y, timeLeft, active, previousTime, length = 100):
+	def __init__(self, X, Y, timeLeft, active, previousTime, length = 1):
 		self.X = X
 		self.Y = Y
 		self.timeLeft = timeLeft
@@ -45,7 +45,7 @@ class Bomb:
 				self.showBlast = 0
 				self.blastTime = 0
 
-	def updateBomb(self, bomber, board, bricks, enemies):
+	def updateBomb(self, bomber, board, bricks, enemies, score):
 		f = 1
 		for i in range(0, self.length):
 			(X, Y) = (self.X - i * OBJECT_HEIGHT, self.Y)
@@ -56,17 +56,16 @@ class Bomb:
 				for brick in bricks:
 					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 						brick.isDestroyed = 1
-						# print(brick.X, brick.Y)
+						score = score +  BRICK_SCORE
 						f = 0
 						break
 				if f == 0:
 					break
 				for enemy in enemies:
 					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-						print(enemy.health)
 						enemy.health = enemy.health - 1
-						print(enemy.health)
-						# exit(0)
+						if enemy.health == 0:
+							score = score + ENEMY_SCORE
 				if (X, Y) == (bomber.X, bomber.Y):
 					bomber.health = bomber.health - 1		
 
@@ -81,17 +80,16 @@ class Bomb:
 				for brick in bricks:
 					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 						brick.isDestroyed = 1
-						# print(brick.X, brick.Y)
+						score = score +  BRICK_SCORE
 						f = 0
 						break
 				if f == 0:
 					break
 				for enemy in enemies:
 					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-						print(enemy.health)
 						enemy.health = enemy.health - 1
-						print(enemy.health)
-						# exit(0)
+						if enemy.health == 0:
+							score = score + ENEMY_SCORE
 				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
 					bomber.health = bomber.health - 1		
 
@@ -106,17 +104,16 @@ class Bomb:
 				for brick in bricks:
 					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 						brick.isDestroyed = 1
-						# print(brick.X, brick.Y)
+						score = score +  BRICK_SCORE
 						f = 0
 						break
 				if f == 0:
 					break
 				for enemy in enemies:
 					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-						print(enemy.health)
 						enemy.health = enemy.health - 1
-						print(enemy.health)
-						# exit(0)
+						if enemy.health == 0:
+							score = score + ENEMY_SCORE
 				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
 					bomber.health = bomber.health - 1		
 
@@ -131,17 +128,17 @@ class Bomb:
 				for brick in bricks:
 					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
 						brick.isDestroyed = 1
-						# print(brick.X, brick.Y)
+						score = score +  BRICK_SCORE
 						f = 0
 						break
 				if f == 0:
 					break
 				for enemy in enemies:
 					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-						print(enemy.health)
 						enemy.health = enemy.health - 1
-						print(enemy.health)
-						# exit(0)
+						if enemy.health == 0:
+							score = score + ENEMY_SCORE
 				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
 					bomber.health = bomber.health - 1		
 
+		return score
