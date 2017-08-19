@@ -10,7 +10,7 @@ from random import randint
 import sys
 import select
 from termios import tcflush, TCIOFLUSH
-from time import time
+from time import time, sleep
 
 
 class Game:
@@ -56,103 +56,131 @@ class Game:
 
 	def checkSameCell(self):
 		for enemy in self.enemies:
-			if enemy.X == self.bomber.X and enemy.Y == self.bomber.Y:
+			if enemy.X == self.bomber.X and enemy.Y == self.bomber.Y and enemy.health:
 				self.bomber.health = self.bomber.health - 1
 
 	def plantBomb(self):
 		self.bomb.plantBomb(self.bomber.X, self.bomber.Y)
 		self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb)
 
+	def checkBlast(self):
+		self.bomb.checkBlast()
+		if self.bomb.showBlast == 1:
+			self.updateBomb()
+
 	def updateBomb(self):
-		blast = self.bomb.updateTime()
-
-		if blast:
-			length = self.bomb.length
-			self.bomb.active = 0
-
-			# UP
-			f = 1
-			for i in range(1, length):
+		# print("LOL")
+		# exit(0)
+		# UP
+		f = 1
+		for i in range(0, self.bomb.length):
+			(X, Y) = (self.bomb.X - i * OBJECT_HEIGHT, self.bomb.Y)
+			if self.board.isValid(X, Y):
+				if self.board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in self.bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
 				if f == 0:
 					break
-				(X, Y) = (self.bomb.X - i * OBJECT_HEIGHT, self.bomb.Y)
-				if self.board.isValid(X, Y):
-					for brick in self.bricks:
-						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
-							brick.isDestroyed = 1
-							f = 0
-							break
-					for enemy in self.enemies:
-						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-							enemy.health = enemy.health - 1
-							
-					if (X, Y) == (self.bomber.X, self.bomber.Y):
-						self.bomber.health = self.bomber.health - 1		
+				for enemy in self.enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						enemy.health = enemy.health - 1
+						
+				if (X, Y) == (self.bomber.X, self.bomber.Y):
+					self.bomber.health = self.bomber.health - 1		
 
-			# DOWN
-			f = 1
-			for i in range(0, length):
+		# DOWN
+		f = 1
+		for i in range(0, self.bomb.length):
+			(X, Y) = (self.bomb.X + i * OBJECT_HEIGHT, self.bomb.Y)
+			if self.board.isValid(X, Y):
+				if self.board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in self.bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
 				if f == 0:
 					break
-				(X, Y) = (self.bomb.X + i * OBJECT_HEIGHT, self.bomb.Y)
-				if self.board.isValid(X, Y):
-					for brick in self.bricks:
-						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
-							brick.isDestroyed = 1
-							f = 0
-							break
-					for enemy in self.enemies:
-						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-							enemy.health = enemy.health - 1
-							
-					if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
-						self.bomber.health = self.bomber.health - 1		
+				for enemy in self.enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						enemy.health = enemy.health - 1
+						
+				if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
+					self.bomber.health = self.bomber.health - 1		
 
-			# LEFT
-			f = 1
-			for i in range(0, length):
+		# LEFT
+		f = 1
+		for i in range(0, self.bomb.length):
+			(X, Y) = (self.bomb.X, self.bomb.Y - i * OBJECT_WIDTH)
+			if self.board.isValid(X, Y):
+				if self.board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in self.bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
 				if f == 0:
 					break
-				(X, Y) = (self.bomb.X, self.bomb.Y - i * OBJECT_WIDTH)
-				if self.board.isValid(X, Y):
-					for brick in self.bricks:
-						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
-							brick.isDestroyed = 1
-							f = 0
-							break
-					for enemy in self.enemies:
-						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-							enemy.health = enemy.health - 1
-							
-					if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
-						self.bomber.health = self.bomber.health - 1		
+				for enemy in self.enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						enemy.health = enemy.health - 1
+						
+				if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
+					self.bomber.health = self.bomber.health - 1		
 
-			# RIGHT
-			f = 1
-			for i in range(0, length):
+		# RIGHT
+		f = 1
+		for i in range(0, self.bomb.length):
+			(X, Y) = (self.bomb.X, self.bomb.Y + i * OBJECT_WIDTH)
+			if self.board.isValid(X, Y):
+				if self.board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in self.bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
 				if f == 0:
 					break
-				(X, Y) = (self.bomb.X, self.bomb.Y + i * OBJECT_WIDTH)
-				if self.board.isValid(X, Y):
-					for brick in self.bricks:
-						if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
-							brick.isDestroyed = 1
-							f = 0
-							break
-					for enemy in self.enemies:
-						if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
-							enemy.health = enemy.health - 1
-							
-					if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
-						self.bomber.health = self.bomber.health - 1		
-
+				for enemy in self.enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						enemy.health = enemy.health - 1
+						
+				if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
+					self.bomber.health = self.bomber.health - 1		
+		# print("EXIT")
+		# exit(0)
 		self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb)
 
 	def checkHealth(self):
 		return self.bomber.health
 
+	def checkEnd(self):
+		for enemy in self.enemies:
+			if enemy.health:
+				return 0
+		for brick in self.bricks:
+			if (brick.X, brick.Y) == (self.bomber.X, self.bomber.Y) and brick.isDestroyed and brick.isExit:
+				return 1
+		return 0
 
 def endGame():
+	game.board.reset(game.bomber, game.enemies, game.bricks, game.bomb)
+	game.board.show
 	# system("tput reset")
 	print("Game Over")
 	
@@ -164,9 +192,12 @@ previous_bomber = time()
 previous_enemy = time()
 
 INPUT = Input()
+yes = 0
 
 while True:
 	
+	sleep(0.05)
+
 	current_time = time()
 	seconds = current_time - previous_bomber
 
@@ -176,23 +207,29 @@ while True:
 			if x == 'w'or x == 'a' or x == 's' or x == 'd':
 				game.moveBomber(x)
 			elif x == 'b':
+				yes = 1
 				game.plantBomb()
 		INPUT.flush()
 		previous_bomber = current_time
 
 	seconds = current_time - previous_enemy
 	
+
 	if seconds > ENEMY_TIME:
 		game.moveEnemies()
 		previous_enemy = current_time
 
 	game.checkSameCell()
+	game.checkBlast()
 	
 	if game.checkHealth() == 0:
 		endGame()
 		break
 
-	game.updateBomb()
+	if game.checkEnd():
+		endGame()
+		break
+
 
 
 	

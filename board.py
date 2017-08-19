@@ -21,10 +21,11 @@ class Board:
 		self.setWalls()
 
 		if bomb:
-			if bomb.active:
+			if bomb.active and bomb.showBlast == 0:
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
 						self.board[bomb.X + i][bomb.Y + j] = bomb.timeLeft
+
 
 		for enemy in enemies:
 			for i in range(OBJECT_HEIGHT):
@@ -36,15 +37,93 @@ class Board:
 
 		for brick in bricks:
 			if brick.isDestroyed == 0:
+				# print(brick.X, brick.Y)
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
 						self.board[brick.X + i][brick.Y + j] = '/'
+			else:
+				if brick.isExit:
+					for i in range(OBJECT_HEIGHT):
+						for j in range(OBJECT_WIDTH):
+							self.board[brick.X + i][brick.Y + j] = 'D'
 
 
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
 				self.board[bomber.X + i][bomber.Y + j] = 'B'
 
+		if bomb:
+			if bomb.active == 1 and bomb.showBlast == 1:
+
+				# Horizontal
+				left = bomb.length
+				right = bomb.length
+
+				# print(bomb.X, bomb.Y)
+				# print(bomb.X, bomb.Y - OBJECT_HEIGHT)
+				# print(self.board[bomb.X][bomb.Y - OBJECT_HEIGHT])
+
+				for i in range(0, bomb.length + 1):
+					if self.isValid(bomb.X, bomb.Y - OBJECT_WIDTH * i) == 0:
+						left = i - 1
+						break
+					else:	
+						if self.board[bomb.X][bomb.Y - OBJECT_WIDTH * i] == 'X':
+							left = i - 1
+							break
+						elif self.board[bomb.X][bomb.Y - OBJECT_WIDTH * i] == '/':
+							left = i
+							break 
+					
+				for i in range(0, bomb.length + 1):
+					if self.isValid(bomb.X, bomb.Y + OBJECT_WIDTH * i) == 0:
+						right = i - 1
+						break
+					else:	
+						if self.board[bomb.X][bomb.Y + OBJECT_WIDTH * i] == 'X':
+							right = i - 1
+							break
+						elif self.board[bomb.X][bomb.Y + OBJECT_WIDTH * i] == '/':
+							right = i
+							break 
+					
+				up = bomb.length
+				down = bomb.length
+				for i in range(0, bomb.length + 1):
+					if self.isValid(bomb.X - OBJECT_HEIGHT * i, bomb.Y) == 0:
+						up = i - 1
+						break
+					else:	
+						if self.board[bomb.X - OBJECT_HEIGHT * i][bomb.Y] == 'X':
+							up = i - 1
+							break
+						elif self.board[bomb.X - OBJECT_HEIGHT * i][bomb.Y] == '/':
+							up = i
+							break
+					
+				for i in range(0, bomb.length + 1):
+					if self.isValid(bomb.X + OBJECT_HEIGHT * i, bomb.Y) == 0:
+						down = i - 1
+						break
+					else:	
+						if self.board[bomb.X + OBJECT_HEIGHT * i][bomb.Y] == 'X':
+							down = i - 1
+							break
+						elif self.board[bomb.X + OBJECT_HEIGHT * i][bomb.Y] == '/':
+							down = i
+							break
+
+				# Horizontal
+				for i in range(bomb.Y - OBJECT_WIDTH * left, bomb.Y + OBJECT_WIDTH * (right + 1)):
+					for j in range(bomb.X, bomb.X + OBJECT_HEIGHT):
+						if self.isValid(j, i) and self.board[j][i] != 'X':
+							self.board[j][i] = 'O'
+
+				# Vertical
+				for i in range(bomb.X - OBJECT_HEIGHT * up, bomb.X + OBJECT_HEIGHT * (down + 1)):
+					for j in range(bomb.Y, bomb.Y + OBJECT_WIDTH):
+						if self.isValid(i, j) and self.board[i][j] != 'X':
+							self.board[i][j] = 'O'
 
 
 	def getRandomEmpty(self):
@@ -76,6 +155,7 @@ class Board:
 			s = ""
 			for j in range(0, self.BOARD_WIDTH):
 				x = str(self.board[i][j])
+				# s = s +
 				if x == 'B':
 					s = s + BLUE + x + END
 				elif x == 'X':
@@ -88,7 +168,9 @@ class Board:
 					s = s + YELLOW + x + END
 				elif x == '/':
 					s = s + BROWN + x + END
-				else:
+				elif x == 'O':
+					s = s + YELLOW_BACKGROUND + x + END
+				else :
 					s = s + x
 			print(s)
 		print("\n")
