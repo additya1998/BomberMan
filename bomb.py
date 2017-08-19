@@ -2,7 +2,7 @@ from time import time
 from config import *
 
 class Bomb:
-	def __init__(self, X, Y, timeLeft, active, previousTime, length = 3):
+	def __init__(self, X, Y, timeLeft, active, previousTime, length = 100):
 		self.X = X
 		self.Y = Y
 		self.timeLeft = timeLeft
@@ -44,4 +44,104 @@ class Bomb:
 				self.previousTime = 0
 				self.showBlast = 0
 				self.blastTime = 0
+
+	def updateBomb(self, bomber, board, bricks, enemies):
+		f = 1
+		for i in range(0, self.length):
+			(X, Y) = (self.X - i * OBJECT_HEIGHT, self.Y)
+			if board.isValid(X, Y):
+				if board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
+				if f == 0:
+					break
+				for enemy in enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						print(enemy.health)
+						enemy.health = enemy.health - 1
+						print(enemy.health)
+						# exit(0)
+				if (X, Y) == (bomber.X, bomber.Y):
+					bomber.health = bomber.health - 1		
+
+		# DOWN
+		f = 1
+		for i in range(0, self.length):
+			(X, Y) = (self.X + i * OBJECT_HEIGHT, self.Y)
+			if board.isValid(X, Y):
+				if board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
+				if f == 0:
+					break
+				for enemy in enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						print(enemy.health)
+						enemy.health = enemy.health - 1
+						print(enemy.health)
+						# exit(0)
+				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
+					bomber.health = bomber.health - 1		
+
+		# LEFT
+		f = 1
+		for i in range(0, self.length):
+			(X, Y) = (self.X, self.Y - i * OBJECT_WIDTH)
+			if board.isValid(X, Y):
+				if board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
+				if f == 0:
+					break
+				for enemy in enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						print(enemy.health)
+						enemy.health = enemy.health - 1
+						print(enemy.health)
+						# exit(0)
+				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
+					bomber.health = bomber.health - 1		
+
+		# RIGHT
+		f = 1
+		for i in range(0, self.length):
+			(X, Y) = (self.X, self.Y + i * OBJECT_WIDTH)
+			if board.isValid(X, Y):
+				if board.board[X][Y] == 'X':
+					f = 0
+					break
+				for brick in bricks:
+					if (brick.X, brick.Y) == (X, Y) and brick.isDestroyed == 0:
+						brick.isDestroyed = 1
+						# print(brick.X, brick.Y)
+						f = 0
+						break
+				if f == 0:
+					break
+				for enemy in enemies:
+					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+						print(enemy.health)
+						enemy.health = enemy.health - 1
+						print(enemy.health)
+						# exit(0)
+				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
+					bomber.health = bomber.health - 1		
 

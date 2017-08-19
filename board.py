@@ -1,6 +1,7 @@
 from random import randint
 from config import *
 from os import system
+from time import sleep
 
 class Board:
 
@@ -26,7 +27,6 @@ class Board:
 					for j in range(OBJECT_WIDTH):
 						self.board[bomb.X + i][bomb.Y + j] = bomb.timeLeft
 
-
 		for enemy in enemies:
 			for i in range(OBJECT_HEIGHT):
 				for j in range(OBJECT_WIDTH):
@@ -37,7 +37,6 @@ class Board:
 
 		for brick in bricks:
 			if brick.isDestroyed == 0:
-				# print(brick.X, brick.Y)
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
 						self.board[brick.X + i][brick.Y + j] = '/'
@@ -53,7 +52,7 @@ class Board:
 				self.board[bomber.X + i][bomber.Y + j] = 'B'
 
 		if bomb:
-			if bomb.active == 1 and bomb.showBlast == 1:
+			if bomb.showBlast == 1:
 
 				# Horizontal
 				left = bomb.length
@@ -125,7 +124,6 @@ class Board:
 						if self.isValid(i, j) and self.board[i][j] != 'X':
 							self.board[i][j] = 'O'
 
-
 	def getRandomEmpty(self):
 		arr = []
 		for i in range(0, self.BOARD_HEIGHT, 4):
@@ -149,7 +147,7 @@ class Board:
 			self.board[i][0] = self.board[i][1] = self.board[i][2] = self.board[i][3] = 'X'
 			self.board[i][self.BOARD_WIDTH - 1] = self.board[i][self.BOARD_WIDTH - 2] = self.board[i][self.BOARD_WIDTH - 3] = self.board[i][self.BOARD_WIDTH - 4] = 'X'
 
-	def show(self):
+	def show(self, level, lives, timeLeft):
 		system("tput reset")
 		for i in range(0, self.BOARD_HEIGHT):
 			s = ""
@@ -174,6 +172,9 @@ class Board:
 					s = s + x
 			print(s)
 		print("\n")
+		print("CURRENT LEVEL : " + str(level))
+		print("LIVES LEFT : " + str(lives))
+		print("TIME LEFT : " + str(timeLeft))
 
 	def isEmpty(self, X, Y):
 		if self.isValid(X, Y) == 0:

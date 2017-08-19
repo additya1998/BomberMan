@@ -9,9 +9,10 @@ import termios
 from person import *
 
 class Enemy(Person):
-	def __init__(self, X, Y, health, speed):
+	def __init__(self, X, Y, speed, health, prevTime):
 		Person.__init__(self, X, Y, health)
 		self.speed = speed
+		self.prevTime = prevTime
 
 	def move(self, board):
 
