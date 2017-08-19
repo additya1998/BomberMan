@@ -162,8 +162,6 @@ class Game:
 						
 				if (X, Y) == (self.bomber.X, self.bomber.Y) and self.bomber.health > 0:
 					self.bomber.health = self.bomber.health - 1		
-		# print("EXIT")
-		# exit(0)
 		self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb)
 
 	def checkHealth(self):
@@ -181,7 +179,6 @@ class Game:
 def endGame():
 	game.board.reset(game.bomber, game.enemies, game.bricks, game.bomb)
 	game.board.show
-	# system("tput reset")
 	print("Game Over")
 	
 
@@ -196,7 +193,7 @@ yes = 0
 
 while True:
 	
-	sleep(0.05)
+	sleep(0.025)
 
 	current_time = time()
 	seconds = current_time - previous_bomber
@@ -222,6 +219,11 @@ while True:
 	game.checkSameCell()
 	game.checkBlast()
 	
+	sleep(0.025)
+
+	game.board.reset(game.bomber, game.enemies, game.bricks, game.bomb)
+
+
 	if game.checkHealth() == 0:
 		endGame()
 		break
