@@ -50,7 +50,7 @@ class Bomb:
 		for i in range(self.length + 1):
 			(X, Y) = (self.X - i * OBJECT_HEIGHT, self.Y)
 			if board.isValid(X, Y):
-				if board.board[X][Y] == 'X':
+				if board.board[X][Y] == WALL_SYMBOL:
 					f = 0
 					break
 				for brick in bricks:
@@ -62,19 +62,19 @@ class Bomb:
 				if f == 0:
 					break
 				for enemy in enemies:
-					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+					if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
 						enemy.health = enemy.health - 1
 						if enemy.health == 0:
 							score = score + ENEMY_SCORE
-				if (X, Y) == (bomber.X, bomber.Y):
-					bomber.health = bomber.health - 1		
+				if (X, Y) == (bomber.getX(), bomber.getY()):
+					bomber.setHealth(bomber.getHealth() - 1)		
 
 		# DOWN
 		f = 1
 		for i in range(self.length + 1):
 			(X, Y) = (self.X + i * OBJECT_HEIGHT, self.Y)
 			if board.isValid(X, Y):
-				if board.board[X][Y] == 'X':
+				if board.board[X][Y] == WALL_SYMBOL:
 					f = 0
 					break
 				for brick in bricks:
@@ -86,19 +86,19 @@ class Bomb:
 				if f == 0:
 					break
 				for enemy in enemies:
-					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+					if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
 						enemy.health = enemy.health - 1
 						if enemy.health == 0:
 							score = score + ENEMY_SCORE
-				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
-					bomber.health = bomber.health - 1		
+				if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.health > 0:
+					bomber.setHealth(bomber.getHealth() - 1)		
 
 		# LEFT
 		f = 1
 		for i in range(self.length + 1):
 			(X, Y) = (self.X, self.Y - i * OBJECT_WIDTH)
 			if board.isValid(X, Y):
-				if board.board[X][Y] == 'X':
+				if board.board[X][Y] == WALL_SYMBOL:
 					f = 0
 					break
 				for brick in bricks:
@@ -110,19 +110,19 @@ class Bomb:
 				if f == 0:
 					break
 				for enemy in enemies:
-					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+					if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
 						enemy.health = enemy.health - 1
 						if enemy.health == 0:
 							score = score + ENEMY_SCORE
-				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
-					bomber.health = bomber.health - 1		
+				if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.health > 0:
+					bomber.setHealth(bomber.getHealth() - 1)		
 
 		# RIGHT
 		f = 1
 		for i in range(self.length + 1):
 			(X, Y) = (self.X, self.Y + i * OBJECT_WIDTH)
 			if board.isValid(X, Y):
-				if board.board[X][Y] == 'X':
+				if board.board[X][Y] == WALL_SYMBOL:
 					f = 0
 					break
 				for brick in bricks:
@@ -134,11 +134,11 @@ class Bomb:
 				if f == 0:
 					break
 				for enemy in enemies:
-					if (enemy.X, enemy.Y) == (X, Y) and enemy.health > 0:
+					if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
 						enemy.health = enemy.health - 1
 						if enemy.health == 0:
 							score = score + ENEMY_SCORE
-				if (X, Y) == (bomber.X, bomber.Y) and bomber.health > 0:
-					bomber.health = bomber.health - 1		
+				if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.health > 0:
+					bomber.setHealth(bomber.getHealth() - 1)		
 
 		return score

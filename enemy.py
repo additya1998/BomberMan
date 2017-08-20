@@ -11,7 +11,7 @@ class Enemy(Person):
 
 	def move(self, board):
 
-		(X, Y) = (self.X, self.Y)
+		(X, Y) = (self.getX(), self.getY())
 		arr = []
 
 		if board.isEmpty(X - OBJECT_HEIGHT, Y):
@@ -31,7 +31,6 @@ class Enemy(Person):
 		else:
 			idx = arr[randint(0, len(arr) - 1)]
 			(x, y) = idx
-			self.X = self.X + x
-			self.Y = self.Y + y
-
-
+			(X, Y) = (self.getX(), self.getY())
+			self.setX(X + x)
+			self.setY(Y + y)

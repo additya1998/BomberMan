@@ -8,20 +8,20 @@ class Bomber(Person):
 		self.speed = 0
 
 	def moveBomber(self, direction, board):
-		(X, Y) = (self.X, self.Y)
+		(X, Y) = (self.getX(), self.getY())
 		if direction == 'w' or direction == 'W':
 			if board.isEmpty(X - OBJECT_HEIGHT, Y):
-				self.X = self.X - OBJECT_HEIGHT
+				self.setX(self.getX() - OBJECT_HEIGHT)
 
 		elif direction == 'a' or direction == 'A':
 			if board.isEmpty(X, Y - OBJECT_WIDTH):
-				self.Y = self.Y - OBJECT_WIDTH
+				self.setY(self.getY() - OBJECT_WIDTH)
 
 		elif direction == 's' or direction == 'S':
 			if board.isEmpty(X + OBJECT_HEIGHT, Y):
-				self.X = self.X + OBJECT_HEIGHT
+				self.setX(self.getX() + OBJECT_HEIGHT)
 
 		elif direction == 'd' or direction == 'D':
 			if board.isEmpty(X, Y + OBJECT_WIDTH):
-				self.Y = self.Y + OBJECT_WIDTH
+				self.setY(self.getY() + OBJECT_WIDTH)
 		
