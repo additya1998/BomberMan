@@ -1,11 +1,6 @@
 from config import *
 from board import Board
-from bomber import Bomber
-from threading import Timer
 from random import randint
-import time, getch, sys
-import os
-import termios
 from person import *
 
 class Enemy(Person):

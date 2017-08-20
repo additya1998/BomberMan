@@ -47,7 +47,7 @@ class Bomb:
 
 	def updateBomb(self, bomber, board, bricks, enemies, score):
 		f = 1
-		for i in range(0, self.length):
+		for i in range(self.length + 1):
 			(X, Y) = (self.X - i * OBJECT_HEIGHT, self.Y)
 			if board.isValid(X, Y):
 				if board.board[X][Y] == 'X':
@@ -71,7 +71,7 @@ class Bomb:
 
 		# DOWN
 		f = 1
-		for i in range(0, self.length):
+		for i in range(self.length + 1):
 			(X, Y) = (self.X + i * OBJECT_HEIGHT, self.Y)
 			if board.isValid(X, Y):
 				if board.board[X][Y] == 'X':
@@ -95,7 +95,7 @@ class Bomb:
 
 		# LEFT
 		f = 1
-		for i in range(0, self.length):
+		for i in range(self.length + 1):
 			(X, Y) = (self.X, self.Y - i * OBJECT_WIDTH)
 			if board.isValid(X, Y):
 				if board.board[X][Y] == 'X':
@@ -119,7 +119,7 @@ class Bomb:
 
 		# RIGHT
 		f = 1
-		for i in range(0, self.length):
+		for i in range(self.length + 1):
 			(X, Y) = (self.X, self.Y + i * OBJECT_WIDTH)
 			if board.isValid(X, Y):
 				if board.board[X][Y] == 'X':

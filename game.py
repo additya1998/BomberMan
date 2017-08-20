@@ -161,7 +161,7 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
 
 		elif gameStatus == 1:
 			gamesLeft = gamesLeft - 1
-			return (0, -1, game.score + game.gameTime)
+			return (0, -1, game.score)
 		
 		else:
 			currentLevel = currentLevel + 1

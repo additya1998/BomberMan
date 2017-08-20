@@ -6,7 +6,7 @@ from time import sleep
 class Board:
 
 	def __init__(self, BOARD_HEIGHT, BOARD_WIDTH):
-		self.board = [[' ' for j in range(0, BOARD_WIDTH)] for i in range(0, BOARD_HEIGHT)]
+		self.board = [[' ' for j in range(BOARD_WIDTH)] for i in range(BOARD_HEIGHT)]
 		self.BOARD_HEIGHT = BOARD_HEIGHT
 		self.BOARD_WIDTH = BOARD_WIDTH
 
@@ -18,7 +18,7 @@ class Board:
 		return 1
 
 	def reset(self, bomber, enemies, bricks, bomb):
-		self.board = [[' ' for j in range(0, BOARD_WIDTH)] for i in range(0, BOARD_HEIGHT)]
+		self.board = [[' ' for j in range(BOARD_WIDTH)] for i in range(BOARD_HEIGHT)]
 		self.setWalls()
 
 		if bomb:
@@ -58,7 +58,8 @@ class Board:
 				left = bomb.length
 				right = bomb.length
 
-				for i in range(0, bomb.length + 1):
+
+				for i in range(bomb.length + 1):
 					if self.isValid(bomb.X, bomb.Y - OBJECT_WIDTH * i) == 0:
 						left = i - 1
 						break
@@ -70,7 +71,7 @@ class Board:
 							left = i
 							break 
 					
-				for i in range(0, bomb.length + 1):
+				for i in range(bomb.length + 1):
 					if self.isValid(bomb.X, bomb.Y + OBJECT_WIDTH * i) == 0:
 						right = i - 1
 						break
@@ -84,7 +85,7 @@ class Board:
 					
 				up = bomb.length
 				down = bomb.length
-				for i in range(0, bomb.length + 1):
+				for i in range(bomb.length + 1):
 					if self.isValid(bomb.X - OBJECT_HEIGHT * i, bomb.Y) == 0:
 						up = i - 1
 						break
@@ -96,7 +97,7 @@ class Board:
 							up = i
 							break
 					
-				for i in range(0, bomb.length + 1):
+				for i in range(bomb.length + 1):
 					if self.isValid(bomb.X + OBJECT_HEIGHT * i, bomb.Y) == 0:
 						down = i - 1
 						break
