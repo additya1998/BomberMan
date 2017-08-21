@@ -56,7 +56,7 @@ class Game:
 			self.enemies.append(newEnemy)
 			self.board.reset(self.bomber, self.enemies, self.bricks, '', [])
 
-		self.board.show(self.level, self.lives, self.gameTime, self.score)
+		# self.board.show(self.level, self.lives, self.gameTime, self.score)
 
 	def addLife(self):
 		(X, Y) = self.board.getRandomEmpty()
@@ -80,7 +80,7 @@ class Game:
 				enemy.prevTime = current_time
 				self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb, self.powerUps)
 			
-		self.board.show(self.level, self.lives, self.gameTime, self.score)
+		# self.board.show(self.level, self.lives, self.gameTime, self.score)
 
 	def moveBomber(self, direction):
 		self.bomber.moveBomber(direction, self.board)
@@ -95,7 +95,7 @@ class Game:
 					self.lives = self.lives + 1
 		self.board.reset(self.bomber, self.enemies, self.bricks, self.bomb, self.powerUps)
 		# self.board.show(self.level, self.lives, self.gameTime, self.score)
-					
+
 
 		for enemy in self.enemies:
 			if enemy.getX() == self.bomber.getX() and enemy.getY() == self.bomber.getY() and enemy.getHealth():
@@ -140,7 +140,7 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
 
 	while True:
 		
-		sleep(0.09)
+		sleep(0.1)
 
 		current_time = time()
 		seconds = current_time - previous_bomber
