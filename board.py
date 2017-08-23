@@ -7,25 +7,25 @@ class Board:
 
 	def __init__(self, BOARD_HEIGHT, BOARD_WIDTH):
 		self.board = [[' ' for j in range(BOARD_WIDTH)] for i in range(BOARD_HEIGHT)]
-		self.BOARD_HEIGHT = BOARD_HEIGHT
-		self.BOARD_WIDTH = BOARD_WIDTH
+		self.__BOARD_HEIGHT = BOARD_HEIGHT
+		self.__BOARD_WIDTH = BOARD_WIDTH
 
 	def isValid(self, X, Y):
 		if X < 0 or Y < 0:
 			return 0
-		if X + OBJECT_HEIGHT >= self.BOARD_HEIGHT or Y + OBJECT_WIDTH >= self.BOARD_WIDTH:
+		if X + OBJECT_HEIGHT >= self.__BOARD_HEIGHT or Y + OBJECT_WIDTH >= self.__BOARD_WIDTH:
 			return 0
 		return 1
 
 	def reset(self, bomber, enemies, bricks, bomb, powerUps):
 		self.board = [[' ' for j in range(BOARD_WIDTH)] for i in range(BOARD_HEIGHT)]
-		self.setWalls()
+		self.__setWalls()
 
 		if bomb:
-			if bomb.active and bomb.showBlast == 0:
+			if bomb.isActive() and bomb.getShowBlast() == 0:
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
-						self.board[bomb.X + i][bomb.Y + j] = bomb.timeLeft
+						self.board[bomb.getX() + i][bomb.getY() + j] = bomb.getTimeLeft()
 
 		for enemy in enemies:
 			for i in range(OBJECT_HEIGHT):
@@ -37,17 +37,18 @@ class Board:
 						self.board[X + i][Y + j] = DOUBLE_HEALTH_ENEMY_SYMBOL
 
 		for brick in bricks:
-			if brick.isDestroyed == 0:
+			if brick.checkDestroyed() == 0:
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
-						self.board[brick.X + i][brick.Y + j] = BRICK_SYMBOL
+						self.board[brick.getX() + i][brick.getY() + j] = BRICK_SYMBOL
 			else:
-				if brick.isExit:
+				if brick.checkExit():
 					for i in range(OBJECT_HEIGHT):
 						for j in range(OBJECT_WIDTH):
-							self.board[brick.X + i][brick.Y + j] = DOOR_SYMBOL
+							self.board[brick.getX() + i][brick.getY() + j] = DOOR_SYMBOL
 
 
+		(X, Y) = (bomber.getX(), bomber.getY())
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
 				self.board[bomber.getX() + i][bomber.getY() + j] = BOMBER_MAN_SYMBOL
@@ -55,107 +56,107 @@ class Board:
 		for powerUp in powerUps:
 			for i in range(OBJECT_HEIGHT):
 				for j in range(OBJECT_WIDTH):
-					if powerUp.isActive:
-						self.board[powerUp.X + i][powerUp.Y + j] = POWER_UP_SYMBOL
+					if powerUp.isActive():
+						self.board[powerUp.getX() + i][powerUp.getY() + j] = POWER_UP_SYMBOL
 
 		if bomb:
-			if bomb.showBlast == 1:
+			if bomb.getShowBlast() == 1:
 
 				# Horizontal
-				left = bomb.length
-				right = bomb.length
+				left = bomb.getLength()
+				right = bomb.getLength()
 
 
-				for i in range(bomb.length + 1):
-					if self.isValid(bomb.X, bomb.Y - OBJECT_WIDTH * i) == 0:
+				for i in range(bomb.getLength() + 1):
+					if self.isValid(bomb.getX(), bomb.getY() - OBJECT_WIDTH * i) == 0:
 						left = i - 1
 						break
 					else:	
-						if self.board[bomb.X][bomb.Y - OBJECT_WIDTH * i] == WALL_SYMBOL:
+						if self.board[bomb.getX()][bomb.getY() - OBJECT_WIDTH * i] == WALL_SYMBOL:
 							left = i - 1
 							break
-						elif self.board[bomb.X][bomb.Y - OBJECT_WIDTH * i] == BRICK_SYMBOL:
+						elif self.board[bomb.getX()][bomb.getY() - OBJECT_WIDTH * i] == BRICK_SYMBOL:
 							left = i
 							break 
 					
-				for i in range(bomb.length + 1):
-					if self.isValid(bomb.X, bomb.Y + OBJECT_WIDTH * i) == 0:
+				for i in range(bomb.getLength() + 1):
+					if self.isValid(bomb.getX(), bomb.getY() + OBJECT_WIDTH * i) == 0:
 						right = i - 1
 						break
 					else:	
-						if self.board[bomb.X][bomb.Y + OBJECT_WIDTH * i] == WALL_SYMBOL:
+						if self.board[bomb.getX()][bomb.getY() + OBJECT_WIDTH * i] == WALL_SYMBOL:
 							right = i - 1
 							break
-						elif self.board[bomb.X][bomb.Y + OBJECT_WIDTH * i] == BRICK_SYMBOL:
+						elif self.board[bomb.getX()][bomb.getY() + OBJECT_WIDTH * i] == BRICK_SYMBOL:
 							right = i
 							break 
 					
-				up = bomb.length
-				down = bomb.length
-				for i in range(bomb.length + 1):
-					if self.isValid(bomb.X - OBJECT_HEIGHT * i, bomb.Y) == 0:
+				up = bomb.getLength()
+				down = bomb.getLength()
+				for i in range(bomb.getLength() + 1):
+					if self.isValid(bomb.getX() - OBJECT_HEIGHT * i, bomb.getY()) == 0:
 						up = i - 1
 						break
 					else:	
-						if self.board[bomb.X - OBJECT_HEIGHT * i][bomb.Y] == WALL_SYMBOL:
+						if self.board[bomb.getX() - OBJECT_HEIGHT * i][bomb.getY()] == WALL_SYMBOL:
 							up = i - 1
 							break
-						elif self.board[bomb.X - OBJECT_HEIGHT * i][bomb.Y] == BRICK_SYMBOL:
+						elif self.board[bomb.getX() - OBJECT_HEIGHT * i][bomb.getY()] == BRICK_SYMBOL:
 							up = i
 							break
 					
-				for i in range(bomb.length + 1):
-					if self.isValid(bomb.X + OBJECT_HEIGHT * i, bomb.Y) == 0:
+				for i in range(bomb.getLength() + 1):
+					if self.isValid(bomb.getX() + OBJECT_HEIGHT * i, bomb.getY()) == 0:
 						down = i - 1
 						break
 					else:	
-						if self.board[bomb.X + OBJECT_HEIGHT * i][bomb.Y] == WALL_SYMBOL:
+						if self.board[bomb.getX() + OBJECT_HEIGHT * i][bomb.getY()] == WALL_SYMBOL:
 							down = i - 1
 							break
-						elif self.board[bomb.X + OBJECT_HEIGHT * i][bomb.Y] == BRICK_SYMBOL:
+						elif self.board[bomb.getX() + OBJECT_HEIGHT * i][bomb.getY()] == BRICK_SYMBOL:
 							down = i
 							break
 
 				# Horizontal
-				for i in range(bomb.Y - OBJECT_WIDTH * left, bomb.Y + OBJECT_WIDTH * (right + 1)):
-					for j in range(bomb.X, bomb.X + OBJECT_HEIGHT):
+				for i in range(bomb.getY() - OBJECT_WIDTH * left, bomb.getY() + OBJECT_WIDTH * (right + 1)):
+					for j in range(bomb.getX(), bomb.getX() + OBJECT_HEIGHT):
 						if self.isValid(j, i) and self.board[j][i] != WALL_SYMBOL:
 							self.board[j][i] = BOMB_SYMBOL
 
 				# Vertical
-				for i in range(bomb.X - OBJECT_HEIGHT * up, bomb.X + OBJECT_HEIGHT * (down + 1)):
-					for j in range(bomb.Y, bomb.Y + OBJECT_WIDTH):
+				for i in range(bomb.getX() - OBJECT_HEIGHT * up, bomb.getX() + OBJECT_HEIGHT * (down + 1)):
+					for j in range(bomb.getY(), bomb.getY() + OBJECT_WIDTH):
 						if self.isValid(i, j) and self.board[i][j] != WALL_SYMBOL:
 							self.board[i][j] = BOMB_SYMBOL
 
 	def getRandomEmpty(self):
 		arr = []
-		for i in range(0, self.BOARD_HEIGHT, 4):
-			for j in range(0, self.BOARD_WIDTH - 2, 4):
+		for i in range(0, self.__BOARD_HEIGHT, 4):
+			for j in range(0, self.__BOARD_WIDTH - 2, 4):
 				if self.isEmpty(i, j):
 					arr.append((i, j))
 		return arr[randint(0, len(arr) - 1)]
 
-	def setWalls(self):
+	def __setWalls(self):
 		for i in range(0, 2):
-			for j in range(0, self.BOARD_WIDTH):
+			for j in range(0, self.__BOARD_WIDTH):
 				self.board[i][j] = WALL_SYMBOL
-				self.board[self.BOARD_HEIGHT - i - 1][j] = WALL_SYMBOL
+				self.board[self.__BOARD_HEIGHT - i - 1][j] = WALL_SYMBOL
 
-		for i in range(0, self.BOARD_HEIGHT, 4):
-			for j in range(0, self.BOARD_WIDTH, 8):
+		for i in range(0, self.__BOARD_HEIGHT, 4):
+			for j in range(0, self.__BOARD_WIDTH, 8):
 				self.board[i][j] = self.board[i][j + 1] = self.board[i][j + 2] = self.board[i][j + 3] = WALL_SYMBOL
 				self.board[i + 1][j] = self.board[i + 1][j + 1] = self.board[i + 1][j + 2] = self.board[i + 1][j + 3] = WALL_SYMBOL
 
-		for i in range(0, self.BOARD_HEIGHT):
+		for i in range(0, self.__BOARD_HEIGHT):
 			self.board[i][0] = self.board[i][1] = self.board[i][2] = self.board[i][3] = WALL_SYMBOL
-			self.board[i][self.BOARD_WIDTH - 1] = self.board[i][self.BOARD_WIDTH - 2] = self.board[i][self.BOARD_WIDTH - 3] = self.board[i][self.BOARD_WIDTH - 4] = WALL_SYMBOL
+			self.board[i][self.__BOARD_WIDTH - 1] = self.board[i][self.__BOARD_WIDTH - 2] = self.board[i][self.__BOARD_WIDTH - 3] = self.board[i][self.__BOARD_WIDTH - 4] = WALL_SYMBOL
 
 	def show(self, level, lives, timeLeft, score):
 		system("tput reset")
-		for i in range(0, self.BOARD_HEIGHT):
+		for i in range(0, self.__BOARD_HEIGHT):
 			s = ""
-			for j in range(0, self.BOARD_WIDTH):
+			for j in range(0, self.__BOARD_WIDTH):
 				x = str(self.board[i][j])
 				# s = s +
 				if x == BOMBER_MAN_SYMBOL:
