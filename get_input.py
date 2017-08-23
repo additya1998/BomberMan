@@ -7,9 +7,9 @@ class Input:
 		self.__fileDescriptor = sys.stdin.fileno()
 		self.__newTerm = termios.tcgetattr(self.__fileDescriptor)
 		self.__oldTerm = termios.tcgetattr(self.__fileDescriptor)
-
 		self.__newTerm[3] = (self.__newTerm[3] & ~termios.ICANON & ~termios.ECHO)
 		termios.tcsetattr(self.__fileDescriptor, termios.TCSAFLUSH, self.__newTerm)
+		
 	def kbhit(self):
 		dr, dw, de = select([sys.stdin], [], [], 0)
 		return dr != []

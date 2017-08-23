@@ -158,25 +158,29 @@ class Board:
 			s = ""
 			for j in range(0, self.__BOARD_WIDTH):
 				x = str(self.board[i][j])
-				if x == BOMBER_MAN_SYMBOL:
-					s = s + BLUE + x + END
-				elif x == WALL_SYMBOL:
-					s = s + RED_BACKGROUND + RED + x + END + END
-				elif x == SINGLE_HEALTH_ENEMY_SYMBOL:
-					s = s + GREEN + x + END
-				elif x == DOUBLE_HEALTH_ENEMY_SYMBOL:
-					s = s + MAGENTA + SINGLE_HEALTH_ENEMY_SYMBOL + END
-				elif x == BOMBER_MAN_SYMBOL:
-					s = s + YELLOW_BACKGROUND + YELLOW + x + END + END
+				
+				if x == WALL_SYMBOL:
+					s = s + BLUE + BLUE_BACKGROUND + x + END
 				elif x == BRICK_SYMBOL:
-					s = s + YELLOW_BACKGROUND + YELLOW + x + END + END
-				elif x == BOMB_SYMBOL:
+					s = s + GREEN + x + END
+				elif x == BOMBER_MAN_SYMBOL:
 					s = s + YELLOW + x + END
+				elif x == POWER_UP_SYMBOL:
+					s = s + GREEN + GREEN_BACKGROUND + x + END
 				elif x == EXPLOSION_SYMBOL:
 					s = s + YELLOW + x + END
+				elif x == '1' or x == '2' or x == '3':
+					s = s + RED + x + END
+				elif x == DOOR_SYMBOL:
+					s = s + WHITE + TURQUOISE_BACKGROUND + x + END
+				elif x == SINGLE_HEALTH_ENEMY_SYMBOL:
+					s = s + RED  + x + END
+				elif x == DOUBLE_HEALTH_ENEMY_SYMBOL:
+					s = s + PINK + x + END
 				else:
 					s = s + x
-			print(s)
+
+		print(s)
 		print("\n")
 		print("CURRENT LEVEL : " + str(level))
 		print("LIVES LEFT : " + str(lives))
