@@ -121,13 +121,13 @@ class Board:
 				for i in range(bomb.getY() - OBJECT_WIDTH * left, bomb.getY() + OBJECT_WIDTH * (right + 1)):
 					for j in range(bomb.getX(), bomb.getX() + OBJECT_HEIGHT):
 						if self.isValid(j, i) and self.board[j][i] != WALL_SYMBOL:
-							self.board[j][i] = BOMB_SYMBOL
+							self.board[j][i] = EXPLOSION_SYMBOL
 
 				# Vertical
 				for i in range(bomb.getX() - OBJECT_HEIGHT * up, bomb.getX() + OBJECT_HEIGHT * (down + 1)):
 					for j in range(bomb.getY(), bomb.getY() + OBJECT_WIDTH):
 						if self.isValid(i, j) and self.board[i][j] != WALL_SYMBOL:
-							self.board[i][j] = BOMB_SYMBOL
+							self.board[i][j] = EXPLOSION_SYMBOL
 
 	def getRandomEmpty(self):
 		arr = []
@@ -158,22 +158,23 @@ class Board:
 			s = ""
 			for j in range(0, self.__BOARD_WIDTH):
 				x = str(self.board[i][j])
-				# s = s +
 				if x == BOMBER_MAN_SYMBOL:
 					s = s + BLUE + x + END
 				elif x == WALL_SYMBOL:
-					s = s + RED + x + END
+					s = s + RED_BACKGROUND + RED + x + END + END
 				elif x == SINGLE_HEALTH_ENEMY_SYMBOL:
 					s = s + GREEN + x + END
 				elif x == DOUBLE_HEALTH_ENEMY_SYMBOL:
 					s = s + MAGENTA + SINGLE_HEALTH_ENEMY_SYMBOL + END
 				elif x == BOMBER_MAN_SYMBOL:
-					s = s + YELLOW + x + END
+					s = s + YELLOW_BACKGROUND + YELLOW + x + END + END
 				elif x == BRICK_SYMBOL:
-					s = s + BROWN + x + END
+					s = s + YELLOW_BACKGROUND + YELLOW + x + END + END
 				elif x == BOMB_SYMBOL:
-					s = s + YELLOW_BACKGROUND + x + END
-				else :
+					s = s + YELLOW + x + END
+				elif x == EXPLOSION_SYMBOL:
+					s = s + YELLOW + x + END
+				else:
 					s = s + x
 			print(s)
 		print("\n")
@@ -188,7 +189,7 @@ class Board:
 
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
-				if self.board[X + i][Y + j] == WALL_SYMBOL or self.board[X +i][Y + j] == BRICK_SYMBOL:
+				if self.board[X + i][Y + j] == WALL_SYMBOL or self.board[X + i][Y + j] == BRICK_SYMBOL:
 					return 0
 				if self.board[X + i][Y + j] == 1 or self.board[X + i][Y + j] == 2 or self.board[X + i][Y + j] == 3:
 					return 0 
