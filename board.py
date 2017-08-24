@@ -10,6 +10,7 @@ class Board:
 		self.__BOARD_HEIGHT = BOARD_HEIGHT
 		self.__BOARD_WIDTH = BOARD_WIDTH
 
+	# Check whether a particular set of co-ordinates belong the the BOARD or not
 	def isValid(self, X, Y):
 		if X < 0 or Y < 0:
 			return 0
@@ -17,16 +18,19 @@ class Board:
 			return 0
 		return 1
 
+	# Reset the board to take into consideration any changes
 	def reset(self, bomber, enemies, bricks, bomb, powerUps):
 		self.board = [[' ' for j in range(BOARD_WIDTH)] for i in range(BOARD_HEIGHT)]
 		self.__setWalls()
 
+		# Update position of the bomb
 		if bomb:
 			if bomb.isActive() and bomb.getShowBlast() == 0:
 				for i in range(OBJECT_HEIGHT):
 					for j in range(OBJECT_WIDTH):
 						self.board[bomb.getX() + i][bomb.getY() + j] = bomb.getTimeLeft()
 
+		# Update the enemies
 		for enemy in enemies:
 			for i in range(OBJECT_HEIGHT):
 				for j in range(OBJECT_WIDTH):
@@ -36,6 +40,7 @@ class Board:
 					elif health == 2:
 						self.board[X + i][Y + j] = DOUBLE_HEALTH_ENEMY_SYMBOL
 
+		# Update the bricks
 		for brick in bricks:
 			if brick.checkDestroyed() == 0:
 				for i in range(OBJECT_HEIGHT):
@@ -47,18 +52,20 @@ class Board:
 						for j in range(OBJECT_WIDTH):
 							self.board[brick.getX() + i][brick.getY() + j] = DOOR_SYMBOL
 
-
+		# Update the bomber man
 		(X, Y) = (bomber.getX(), bomber.getY())
 		for i in range(OBJECT_HEIGHT):
 			for j in range(OBJECT_WIDTH):
 				self.board[bomber.getX() + i][bomber.getY() + j] = BOMBER_MAN_SYMBOL
 
+		# Update the powerups
 		for powerUp in powerUps:
 			for i in range(OBJECT_HEIGHT):
 				for j in range(OBJECT_WIDTH):
 					if powerUp.isActive():
 						self.board[powerUp.getX() + i][powerUp.getY() + j] = POWER_UP_SYMBOL
 
+		# Update the bomb for an explosion 
 		if bomb:
 			if bomb.getShowBlast() == 1:
 
@@ -89,8 +96,9 @@ class Board:
 							break
 						elif self.board[bomb.getX()][bomb.getY() + OBJECT_WIDTH * i] == BRICK_SYMBOL:
 							right = i
-							break 
-					
+							break
+
+				# Vertical
 				up = bomb.getLength()
 				down = bomb.getLength()
 				for i in range(bomb.getLength() + 1):
@@ -129,6 +137,7 @@ class Board:
 						if self.isValid(i, j) and self.board[i][j] != WALL_SYMBOL:
 							self.board[i][j] = EXPLOSION_SYMBOL
 
+	# Returns a random empty cell from the board
 	def getRandomEmpty(self):
 		arr = []
 		for i in range(0, self.__BOARD_HEIGHT, 4):
@@ -137,6 +146,7 @@ class Board:
 					arr.append((i, j))
 		return arr[randint(0, len(arr) - 1)]
 
+	# Sets up walls for the game 
 	def __setWalls(self):
 		for i in range(0, 2):
 			for j in range(0, self.__BOARD_WIDTH):
@@ -152,8 +162,9 @@ class Board:
 			self.board[i][0] = self.board[i][1] = self.board[i][2] = self.board[i][3] = WALL_SYMBOL
 			self.board[i][self.__BOARD_WIDTH - 1] = self.board[i][self.__BOARD_WIDTH - 2] = self.board[i][self.__BOARD_WIDTH - 3] = self.board[i][self.__BOARD_WIDTH - 4] = WALL_SYMBOL
 
+	# Displays the board to the user 
 	def show(self, level, lives, timeLeft, score):
-		system("tput reset")
+		system("clear")
 		for i in range(0, self.__BOARD_HEIGHT):
 			s = ""
 			for j in range(0, self.__BOARD_WIDTH):
@@ -187,6 +198,7 @@ class Board:
 		print("TIME LEFT : " + str(timeLeft))
 		print("SCORE : " + str(score))
 
+	# Checks whether a cell is empty of not
 	def isEmpty(self, X, Y):
 		if self.isValid(X, Y) == 0:
 			return 0

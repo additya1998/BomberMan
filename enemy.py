@@ -3,6 +3,8 @@ from board import Board
 from random import randint
 from person import *
 
+# A class for the different types of enemies which has get and set functions so that it's data
+# members aren't directly accessible outside the class
 class Enemy(Person):
 	def __init__(self, X, Y, speed, health, prevTime):
 		Person.__init__(self, X, Y, health)

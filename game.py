@@ -1,8 +1,8 @@
 from board import * 
 from bomb import * 
 from config import *
-from bomber import *	
-from bomb import *	
+from bomber import *    
+from bomb import *  
 from enemy import *
 from brick import *
 from get_input import * 
@@ -15,241 +15,254 @@ from time import time, sleep
 
 
 class Game:
-	def __init__(self, level, lives, gameTime, previousScore):
+    def __init__(self, level, lives, gameTime, previousScore):
 
-		levelDetails = LEVELS[level]
-		self.__score = previousScore
-		self.__level = level
-		self.__lives = lives
-		self.__gameTime = gameTime
-		self.__previousGameTime = time()
-		self.__powerUps = []
+        levelDetails = LEVELS[level]
+        self.__score = previousScore
+        self.__level = level
+        self.__lives = lives
+        self.__gameTime = gameTime
+        self.__previousGameTime = time()
+        self.__powerUps = []
 
-		self.__board = Board(BOARD_HEIGHT, BOARD_WIDTH)
-		
-		self.__bomber = Bomber(START_X, START_Y) 
-		self.__board.reset(self.__bomber, [], [], '', [])
+        # Object of the board class that contains the board details for the current game
+        self.__board = Board(BOARD_HEIGHT, BOARD_WIDTH)
+        
+        # Object of the bomber class that contains the details for the bomberman for the current game
+        self.__bomber = Bomber(START_X, START_Y)
+        self.__board.reset(self.__bomber, [], [], '', [])
 
-		self.__bricks = []
-		for i in range(COUNT_BRICKS):
-			(X, Y) = self.__board.getRandomEmpty()
-			newBrick = Brick(X, Y)
-			self.__bricks.append(newBrick)
-			self.__board.reset(self.__bomber, [], self.__bricks, '', [])
+        # Adding bricks to the game
+        self.__bricks = []
+        for i in range(COUNT_BRICKS):
+            (X, Y) = self.__board.getRandomEmpty()
+            newBrick = Brick(X, Y)
+            self.__bricks.append(newBrick)
+            self.__board.reset(self.__bomber, [], self.__bricks, '', [])
 
-		self.__bricks[randint(0, COUNT_BRICKS - 1)].setExit()
+        # Setting a brick as the Door to the next level for the current game
+        self.__bricks[randint(0, COUNT_BRICKS - 1)].setExit()
 
-		self.__bomb = Bomb(0, 0, 0, 0, 0)
-
-		self.__enemies = []
-
-
-		for i in range(levelDetails[0]):
-			(X, Y) = self.__board.getRandomEmpty()
-			newEnemy = Enemy(X, Y, levelDetails[2], levelDetails[4], time())
-			self.__enemies.append(newEnemy)
-			self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
-
-		for i in range(levelDetails[1]):
-			(X, Y) = self.__board.getRandomEmpty()
-			newEnemy = Enemy(X, Y, levelDetails[3], levelDetails[5], time())
-			self.__enemies.append(newEnemy)
-			self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
-
-		# self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
-
-	def getLevel(self):
-		return self.__level
-
-	def getScore(self):
-		return self.__score
-
-	def getLives(self):
-		return self.__lives
-
-	def getGameTime(self):
-		return self.__gameTime
-
-	def show(self):
-		self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+        # Initialising a bomb for the game, which is initially inactive
+        self.__bomb = Bomb(0, 0, 0, 0, 0)
 
 
-	def addLife(self):
-		(X, Y) = self.__board.getRandomEmpty()
-		self.__powerUps.append(PowerUp(X, Y, time()))
+        self.__enemies = []
 
-	def updatePowerUp(self):
-		for powerUp in self.__powerUps:
-			powerUp.update()
+        # Add enemies with single health
+        for i in range(levelDetails[0]):
+            (X, Y) = self.__board.getRandomEmpty()
+            newEnemy = Enemy(X, Y, levelDetails[2], levelDetails[4], time())
+            self.__enemies.append(newEnemy)
+            self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
 
-	def updateTime(self):
-		current_time = time()
-		if current_time - self.__previousGameTime > 1:
-			self.__gameTime = self.__gameTime - 1
-			self.__previousGameTime = current_time
+        # Add enemies with double health
+        for i in range(levelDetails[1]):
+            (X, Y) = self.__board.getRandomEmpty()
+            newEnemy = Enemy(X, Y, levelDetails[3], levelDetails[5], time())
+            self.__enemies.append(newEnemy)
+            self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
 
-	def moveEnemies(self):
-		current_time = time()
-		for enemy in self.__enemies:
-			if current_time - enemy.getPrevTime() > enemy.getSpeed() and enemy.getHealth(): 
+        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
 
-				(X, Y) = (enemy.getX(), enemy.getY())
-				arr = []
+    # Getter functions
 
-				if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
-					arr.append((-OBJECT_HEIGHT, 0))
+    def getLevel(self):
+        return self.__level
 
-				if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
-					arr.append((OBJECT_HEIGHT, 0))
-				
-				if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
-					arr.append((0, -OBJECT_WIDTH))
-				
-				if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
-					arr.append((0, OBJECT_WIDTH))
+    def getScore(self):
+        return self.__score
 
-				if len(arr) == 0:
-					pass
-				else:
-					idx = arr[randint(0, len(arr) - 1)]
-					(x, y) = idx
-					enemy.move(X + x, Y + y)
+    def getLives(self):
+        return self.__lives
 
-				enemy.setPrevTime(current_time)
-				self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-			
-		# self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+    def getGameTime(self):
+        return self.__gameTime
 
-	def moveBomber(self, direction):
-
-		(X, Y) = (self.__bomber.getX(), self.__bomber.getY())
-		if direction == 'w' or direction == 'W':
-			if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
-				self.__bomber.move(X - OBJECT_HEIGHT, Y)
-
-		elif direction == 'a' or direction == 'A':
-			if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
-				self.__bomber.move(X, Y - OBJECT_WIDTH)
-
-		elif direction == 's' or direction == 'S':
-			if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
-				self.__bomber.move(X + OBJECT_HEIGHT, Y)
-
-		elif direction == 'd' or direction == 'D':
-			if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
-				self.__bomber.move(X, Y + OBJECT_WIDTH)
-		
-		self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-
-	def checkSameCell(self):
-
-		for powerUp in self.__powerUps:
-			if powerUp.isActive():
-				if (self.__bomber.getX(), self.__bomber.getY()) == (powerUp.getX(), powerUp.getY()):
-					powerUp.setInActive()
-					self.__lives = self.__lives + 1
-		self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-		# self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+    def show(self):
+        self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
 
 
-		for enemy in self.__enemies:
-			if enemy.getX() == self.__bomber.getX() and enemy.getY() == self.__bomber.getY() and enemy.getHealth():
-				health = self.__bomber.getHealth()
-				self.__bomber.setHealth(health - 1)
+    # To increment available lives for the player 
+    def addLife(self):
+        (X, Y) = self.__board.getRandomEmpty()
+        self.__powerUps.append(PowerUp(X, Y, time()))
 
-	def plantBomb(self):
-		self.__bomb.plantBomb(self.__bomber.getX(), self.__bomber.getY())
-		self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+    # Update all the powerups
+    def updatePowerUp(self):
+        for powerUp in self.__powerUps:
+            powerUp.update()
 
-	def checkBlast(self):
-		self.__bomb.checkBlast()
-		if self.__bomb.getShowBlast() and self.__bomb.isActive():
-			self.__score = self.__bomb.update(self.__bomber, self.__board, self.__bricks, self.__enemies, self.__score)
-			self.__bomb.makeInactive()
-		self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+    def updateTime(self):
+        current_time = time()
+        if current_time - self.__previousGameTime > 1:
+            self.__gameTime = self.__gameTime - 1
+            self.__previousGameTime = current_time
 
-	def checkEnd(self):
-		# 0 -> going on
-		# 1 -> loose
-		# 2 -> win
-		if self.__gameTime == 0:
-			return 1
-		if self.__bomber.getHealth() == 0:
-			return 1
-		for enemy in self.__enemies:
-			if enemy.getHealth():
-				return 0
-		for brick in self.__bricks:
-			if (brick.getX(), brick.getY()) == (self.__bomber.getX(), self.__bomber.getY()) and brick.checkDestroyed() and brick.checkExit():
-				return 2
-		return 0
+    # Chooses a random empty adjacent block and moves an enemy to it
+    def moveEnemies(self):
+        current_time = time()
+        for enemy in self.__enemies:
+            if current_time - enemy.getPrevTime() > enemy.getSpeed() and enemy.getHealth(): 
+
+                (X, Y) = (enemy.getX(), enemy.getY())
+                arr = []
+
+                if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
+                    arr.append((-OBJECT_HEIGHT, 0))
+
+                if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
+                    arr.append((OBJECT_HEIGHT, 0))
+                
+                if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
+                    arr.append((0, -OBJECT_WIDTH))
+                
+                if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
+                    arr.append((0, OBJECT_WIDTH))
+
+                if len(arr) == 0:
+                    pass
+                else:
+                    idx = arr[randint(0, len(arr) - 1)]
+                    (x, y) = idx
+                    enemy.move(X + x, Y + y)
+
+                enemy.setPrevTime(current_time)
+                self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+            
+        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+
+    # Move the bomber in the specified direction if possible
+    def moveBomber(self, direction):
+
+        (X, Y) = (self.__bomber.getX(), self.__bomber.getY())
+        if direction == 'w' or direction == 'W':
+            if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
+                self.__bomber.move(X - OBJECT_HEIGHT, Y)
+
+        elif direction == 'a' or direction == 'A':
+            if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
+                self.__bomber.move(X, Y - OBJECT_WIDTH)
+
+        elif direction == 's' or direction == 'S':
+            if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
+                self.__bomber.move(X + OBJECT_HEIGHT, Y)
+
+        elif direction == 'd' or direction == 'D':
+            if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
+                self.__bomber.move(X, Y + OBJECT_WIDTH)
+        
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+
+    # Check whether the BomberMan is in the same cell with an enemy, powerup, or explosion
+    def checkSameCell(self):
+
+        for powerUp in self.__powerUps:
+            if powerUp.isActive():
+                if (self.__bomber.getX(), self.__bomber.getY()) == (powerUp.getX(), powerUp.getY()):
+                    powerUp.setInActive()
+                    self.__lives = self.__lives + 1
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+
+
+        for enemy in self.__enemies:
+            if enemy.getX() == self.__bomber.getX() and enemy.getY() == self.__bomber.getY() and enemy.getHealth():
+                health = self.__bomber.getHealth()
+                self.__bomber.setHealth(health - 1)
+
+    def plantBomb(self):
+        self.__bomb.plantBomb(self.__bomber.getX(), self.__bomber.getY())
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+
+    def checkBlast(self):
+        self.__bomb.checkBlast()
+        if self.__bomb.getShowBlast() and self.__bomb.isActive():
+            self.__score = self.__bomb.update(self.__bomber, self.__board, self.__bricks, self.__enemies, self.__score)
+            self.__bomb.makeInactive()
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+
+    # Check whether the game should end now 
+    # 0 -> going on
+    # 1 -> loose
+    # 2 -> win
+    def checkEnd(self):
+        if self.__gameTime == 0:
+            return 1
+        if self.__bomber.getHealth() == 0:
+            return 1
+        for enemy in self.__enemies:
+            if enemy.getHealth():
+                return 0
+        for brick in self.__bricks:
+            if (brick.getX(), brick.getY()) == (self.__bomber.getX(), self.__bomber.getY()) and brick.checkDestroyed() and brick.checkExit():
+                return 2
+        return 0
 
 
 def startNewGame(currentLevel, gamesLeft, previousScore):
-	game = Game(currentLevel, gamesLeft, GAME_LENGTH, previousScore)
+    game = Game(currentLevel, gamesLeft, GAME_LENGTH, previousScore)
 
-	previous_bomber = time()
-	previous_enemy = time()
+    previous_bomber = time()
+    previous_enemy = time()
 
-	INPUT = Input()
+    INPUT = Input()
 
-	while True:
-		
-		sleep(0.1)
+    while True:
+        
+        sleep(0.1)
 
-		current_time = time()
-		seconds = current_time - previous_bomber
+        current_time = time()
+        seconds = current_time - previous_bomber
 
-		if INPUT.kbhit():
-			if seconds > BOMBER_TIME:
-				x = INPUT.getch()
-				if x == 'w'or x == 'a' or x == 's' or x == 'd':
-					game.moveBomber(x)
-				elif x == 'b':
-					game.plantBomb()
-				elif x == 'q':
-					exit(0)
-				elif x == 'p':
-					game.addLife()
-			INPUT.flush()
-			previous_bomber = current_time
+        if INPUT.kbhit():
+            if seconds > BOMBER_TIME:
+                x = INPUT.getch()
+                if x == 'w'or x == 'a' or x == 's' or x == 'd':
+                    game.moveBomber(x)
+                elif x == 'b':
+                    game.plantBomb()
+                elif x == 'q':
+                    exit(0)
+                elif x == 'p':
+                    game.addLife()
+            INPUT.flush()
+            previous_bomber = current_time
 
-		game.moveEnemies()
-		game.checkSameCell()
-		game.checkBlast()
-		game.updateTime()
-		game.updatePowerUp()
+        game.moveEnemies()
+        game.checkSameCell()
+        game.checkBlast()
+        game.updateTime()
+        game.updatePowerUp()
 
-		game.show()
+        game.show()
 
-		gameStatus = game.checkEnd()
-		
-		if gameStatus == 0:
-			pass
+        gameStatus = game.checkEnd()
+        
+        if gameStatus == 0:
+            pass
 
-		elif gameStatus == 1:
-			gamesLeft = gamesLeft - 1
-			return (0, -1, game.getScore())
-		
-		else:
-			currentLevel = currentLevel + 1
-			return (1, 1, game.getScore() + game.getGameTime())
+        elif gameStatus == 1:
+            gamesLeft = gamesLeft - 1
+            return (0, -1, game.getScore())
+        
+        else:
+            currentLevel = currentLevel + 1
+            return (1, 1, game.getScore() + game.getGameTime())
 
 
 (gamesLeft, currentLevel, initialScore) = (3, 0, 0)
 while True:
-	if currentLevel > 5:
-		print("YOU WIN!")
-		break
+    if currentLevel > 5:
+        print("YOU WIN!")
+        break
 
-	elif gamesLeft == 0:
-		print("YOU LOOSE!")
-		break
+    elif gamesLeft == 0:
+        print("YOU LOOSE!")
+        break
 
-	else:
-		(X, Y, SCORE) = startNewGame(currentLevel, gamesLeft, initialScore)
-		currentLevel = currentLevel + X
-		gamesLeft = gamesLeft + Y
-		initialScore = SCORE
-
-								
+    else:
+        (X, Y, SCORE) = startNewGame(currentLevel, gamesLeft, initialScore)
+        currentLevel = currentLevel + X
+        gamesLeft = gamesLeft + Y
+        initialScore = SCORE

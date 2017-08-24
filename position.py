@@ -1,3 +1,5 @@
+# Class that is inherited by various other classes to manage their positions on the board.
+
 class Position:
 	def __init__(self, X, Y):
 		self.__X = X

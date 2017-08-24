@@ -7,6 +7,10 @@ Controls:
 	'd' - Move right
 	'b'	- Drop bomb
 	'p' - Request a power-up
+	'q' - Quit
+
+How to run the game:
+	python3 game.py
 
 Types of Enemies:
 	1. Health : Some enemies need a single explosion to kill, others required double explosions to kill.
@@ -31,8 +35,13 @@ Scoring:
 	The user is gives 300 seconds to complete a single level, if he cannot do it, the user looses a life.
 	If the user does it the time left is added to his score as a bonus.
 
-User wins the game when he crosses all the 6 levels.
-User looses the game when he looses all his lives.
+Winning:
+	The user has to kill all the enemies, destroy the bricks until he finds the brick which has the door to the next level within the 
+	given time frame to cross a level.
+	The user wins the game when he crosses all the 6 levels.
+
+Loosing:
+	User looses the game when he looses all his lives.
 
 Classes Used:
 	1. Board
