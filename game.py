@@ -1,11 +1,11 @@
-from board import * 
-from bomb import * 
+from board import *
+from bomb import *
 from config import *
-from bomber import *    
-from bomb import *  
+from bomber import *
+from bomb import *
 from enemy import *
 from brick import *
-from get_input import * 
+from get_input import *
 from random import randint
 from powerup import *
 import sys
@@ -27,7 +27,7 @@ class Game:
 
         # Object of the board class that contains the board details for the current game
         self.__board = Board(BOARD_HEIGHT, BOARD_WIDTH)
-        
+
         # Object of the bomber class that contains the details for the bomberman for the current game
         self.__bomber = Bomber(START_X, START_Y)
         self.__board.reset(self.__bomber, [], [], '', [])
@@ -45,7 +45,6 @@ class Game:
 
         # Initialising a bomb for the game, which is initially inactive
         self.__bomb = Bomb(0, 0, 0, 0, 0)
-
 
         self.__enemies = []
 
@@ -82,8 +81,7 @@ class Game:
     def show(self):
         self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
 
-
-    # To increment available lives for the player 
+    # To increment available lives for the player
     def addLife(self):
         (X, Y) = self.__board.getRandomEmpty()
         self.__powerUps.append(PowerUp(X, Y, time()))
@@ -103,7 +101,7 @@ class Game:
     def moveEnemies(self):
         current_time = time()
         for enemy in self.__enemies:
-            if current_time - enemy.getPrevTime() > enemy.getSpeed() and enemy.getHealth(): 
+            if current_time - enemy.getPrevTime() > enemy.getSpeed() and enemy.getHealth():
 
                 (X, Y) = (enemy.getX(), enemy.getY())
                 arr = []
@@ -113,10 +111,10 @@ class Game:
 
                 if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
                     arr.append((OBJECT_HEIGHT, 0))
-                
+
                 if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
                     arr.append((0, -OBJECT_WIDTH))
-                
+
                 if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
                     arr.append((0, OBJECT_WIDTH))
 
@@ -129,7 +127,7 @@ class Game:
 
                 enemy.setPrevTime(current_time)
                 self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-            
+
         # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
 
     # Move the bomber in the specified direction if possible
@@ -151,7 +149,7 @@ class Game:
         elif direction == 'd' or direction == 'D':
             if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
                 self.__bomber.move(X, Y + OBJECT_WIDTH)
-        
+
         self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
 
     # Check whether the BomberMan is in the same cell with an enemy, powerup, or explosion
@@ -164,7 +162,6 @@ class Game:
                     self.__lives = self.__lives + 1
         self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
         # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
-
 
         for enemy in self.__enemies:
             if enemy.getX() == self.__bomber.getX() and enemy.getY() == self.__bomber.getY() and enemy.getHealth():
@@ -182,7 +179,7 @@ class Game:
             self.__bomb.makeInactive()
         self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
 
-    # Check whether the game should end now 
+    # Check whether the game should end now
     # 0 -> going on
     # 1 -> loose
     # 2 -> win
@@ -209,7 +206,7 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
     INPUT = Input()
 
     while True:
-        
+
         sleep(0.1)
 
         current_time = time()
@@ -238,14 +235,14 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
         game.show()
 
         gameStatus = game.checkEnd()
-        
+
         if gameStatus == 0:
             pass
 
         elif gameStatus == 1:
             gamesLeft = gamesLeft - 1
             return (0, -1, game.getScore())
-        
+
         else:
             currentLevel = currentLevel + 1
             return (1, 1, game.getScore() + game.getGameTime())
