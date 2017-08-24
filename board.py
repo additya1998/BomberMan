@@ -190,8 +190,8 @@ class Board:
 					s = s + PINK + x + END
 				else:
 					s = s + x
+			print(s)
 
-		print(s)
 		print("\n")
 		print("CURRENT LEVEL : " + str(level))
 		print("LIVES LEFT : " + str(lives))
