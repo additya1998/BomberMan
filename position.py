@@ -1,4 +1,5 @@
-# Class that is inherited by various other classes to manage their positions on the board.
+# Class that is inherited by various other classes to manage their positions
+# on the board.
 
 
 class Position:

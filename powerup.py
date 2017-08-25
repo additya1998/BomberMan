@@ -16,7 +16,8 @@ class PowerUp(Position):
         if current_time - self.__previousTime > POWER_UP_LENGTH:
             self.__active = 0
 
-    # To check whether the power-up is active or not, and to make it inative after some time.
+    # To check whether the power-up is active or not, and to make it inative
+    # after some time.
 
     def isActive(self):
         return self.__active

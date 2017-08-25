@@ -5,7 +5,8 @@ from config import *
 
 # A class that contains the details about the bomb.
 class Bomb(Position):
-    def __init__(self, X, Y, timeLeft, active, previousTime, length=EXPLOSION_LENGTH):
+    def __init__(self, X, Y, timeLeft, active,
+                 previousTime, length=EXPLOSION_LENGTH):
         Position.__init__(self, X, Y)
         # Time left before explosion
         self.__timeLeft = timeLeft
@@ -82,30 +83,35 @@ class Bomb(Position):
         for i in range(self.__length + 1):
             (X, Y) = (self.getX() - i * OBJECT_HEIGHT, self.getY())
             if board.isValid(X, Y):
-                # Stop if it is a wall, since explosions cannot pass throught walls
+                # Stop if it is a wall, since explosions cannot pass throught
+                # walls
                 if board.board[X][Y] == WALL_SYMBOL:
                     f = 0
                     break
 
-                # Check if a brick is affected or not, and if yes, add it to the score and stop since
-                # effect of explosion won't pass through a brick
+                # Check if a brick is affected or not, and if yes, add it to
+                # the score and stop since effect of explosion won't pass
+                # through a brick
                 for brick in bricks:
-                    if (brick.getX(), brick.getY()) == (X, Y) and brick.checkDestroyed() == 0:
-                        brick.setDestroyed()
-                        score = score + BRICK_SCORE
-                        f = 0
-                        break
+                    if (brick.getX(), brick.getY()) == (X, Y):
+                        if brick.checkDestroyed() == 0:
+                            brick.setDestroyed()
+                            score = score + BRICK_SCORE
+                            f = 0
+                            break
                 if f == 0:
                     break
 
                 # Kill enemies which are within the range of the explosion
                 for enemy in enemies:
-                    if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
-                        enemy.setHealth(enemy.getHealth() - 1)
-                        if enemy.getHealth() == 0:
-                            score = score + ENEMY_SCORE
+                    if (enemy.getX(), enemy.getY()) == (X, Y):
+                        if enemy.getHealth() > 0:
+                            enemy.setHealth(enemy.getHealth() - 1)
+                            if enemy.getHealth() == 0:
+                                score = score + ENEMY_SCORE
 
-                # Decrement the health of the BomberMan if he is in range of the explosion
+                # Decrement the health of the BomberMan if he is in range of
+                # the explosion
                 if (X, Y) == (bomber.getX(), bomber.getY()):
                     bomber.setHealth(bomber.getHealth() - 1)
 
@@ -114,95 +120,113 @@ class Bomb(Position):
         for i in range(self.__length + 1):
             (X, Y) = (self.getX() + i * OBJECT_HEIGHT, self.getY())
             if board.isValid(X, Y):
-                # Stop if it is a wall, since explosions cannot pass throught walls
+                # Stop if it is a wall, since explosions cannot pass throught
+                # walls
                 if board.board[X][Y] == WALL_SYMBOL:
                     f = 0
                     break
 
-                # Check if a brick is affected or not, and if yes, add it to the score and stop since
-                # effect of explosion won't pass through a brick
+                # Check if a brick is affected or not, and if yes, add it to
+                # the score and stop since effect of explosion won't pass
+                # through a brick
                 for brick in bricks:
-                    if (brick.getX(), brick.getY()) == (X, Y) and brick.checkDestroyed() == 0:
-                        brick.setDestroyed()
-                        score = score + BRICK_SCORE
-                        f = 0
-                        break
+                    if (brick.getX(), brick.getY()) == (X, Y):
+                        if brick.checkDestroyed() == 0:
+                            brick.setDestroyed()
+                            score = score + BRICK_SCORE
+                            f = 0
+                            break
                 if f == 0:
                     break
 
                 # Kill enemies which are within the range of the explosion
                 for enemy in enemies:
-                    if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
-                        enemy.setHealth(enemy.getHealth() - 1)
-                        if enemy.getHealth() == 0:
-                            score = score + ENEMY_SCORE
+                    if (enemy.getX(), enemy.getY()) == (X, Y):
+                        if enemy.getHealth() > 0:
+                            enemy.setHealth(enemy.getHealth() - 1)
+                            if enemy.getHealth() == 0:
+                                score = score + ENEMY_SCORE
 
-                # Decrement the health of the BomberMan if he is in range of the explosion
-                if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.getHealth() > 0:
-                    bomber.setHealth(bomber.getHealth() - 1)
+                # Decrement the health of the BomberMan if he is in range of
+                # the explosion
+                if (X, Y) == (bomber.getX(), bomber.getY()):
+                    if bomber.getHealth() > 0:
+                        bomber.setHealth(bomber.getHealth() - 1)
 
         # Checkig in the left direction for the effect of the BOMB
         f = 1
         for i in range(self.__length + 1):
             (X, Y) = (self.getX(), self.getY() - i * OBJECT_WIDTH)
             if board.isValid(X, Y):
-                # Stop if it is a wall, since explosions cannot pass throught walls
+                # Stop if it is a wall, since explosions cannot pass throught
+                # walls
                 if board.board[X][Y] == WALL_SYMBOL:
                     f = 0
                     break
 
-                # Check if a brick is affected or not, and if yes, add it to the score and stop since
-                # effect of explosion won't pass through a brick
+                # Check if a brick is affected or not, and if yes, add it to
+                # the score and stop since effect of explosion won't pass
+                # through a brick
                 for brick in bricks:
-                    if (brick.getX(), brick.getY()) == (X, Y) and brick.checkDestroyed() == 0:
-                        brick.setDestroyed()
-                        score = score + BRICK_SCORE
-                        f = 0
-                        break
+                    if (brick.getX(), brick.getY()) == (X, Y):
+                        if brick.checkDestroyed() == 0:
+                            brick.setDestroyed()
+                            score = score + BRICK_SCORE
+                            f = 0
+                            break
                 if f == 0:
                     break
 
                 # Kill enemies which are within the range of the explosion
                 for enemy in enemies:
-                    if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
-                        enemy.setHealth(enemy.getHealth() - 1)
-                        if enemy.getHealth() == 0:
-                            score = score + ENEMY_SCORE
+                    if (enemy.getX(), enemy.getY()) == (X, Y):
+                        if enemy.getHealth() > 0:
+                            enemy.setHealth(enemy.getHealth() - 1)
+                            if enemy.getHealth() == 0:
+                                score = score + ENEMY_SCORE
 
-                # Decrement the health of the BomberMan if he is in range of the explosion
-                if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.getHealth() > 0:
-                    bomber.setHealth(bomber.getHealth() - 1)
+                # Decrement the health of the BomberMan if he is in range of
+                # the explosion
+                if (X, Y) == (bomber.getX(), bomber.getY()):
+                    if bomber.getHealth() > 0:
+                        bomber.setHealth(bomber.getHealth() - 1)
 
         # Checkig in the right direction for the effect of the BOMB
         f = 1
         for i in range(self.__length + 1):
             (X, Y) = (self.getX(), self.getY() + i * OBJECT_WIDTH)
             if board.isValid(X, Y):
-                # Stop if it is a wall, since explosions cannot pass throught walls
+                # Stop if it is a wall, since explosions cannot pass throught
+                # walls
                 if board.board[X][Y] == WALL_SYMBOL:
                     f = 0
                     break
 
-                # Check if a brick is affected or not, and if yes, add it to the score and stop since
-                # effect of explosion won't pass through a brick
+                # Check if a brick is affected or not, and if yes, add it to
+                # the score and stop since effect of explosion won't pass
+                # through a brick
                 for brick in bricks:
-                    if (brick.getX(), brick.getY()) == (X, Y) and brick.checkDestroyed() == 0:
-                        brick.setDestroyed()
-                        score = score + BRICK_SCORE
-                        f = 0
-                        break
+                    if (brick.getX(), brick.getY()) == (X, Y):
+                        if brick.checkDestroyed() == 0:
+                            brick.setDestroyed()
+                            score = score + BRICK_SCORE
+                            f = 0
+                            break
                 if f == 0:
                     break
 
                 # Kill enemies which are within the range of the explosion
                 for enemy in enemies:
-                    if (enemy.getX(), enemy.getY()) == (X, Y) and enemy.getHealth() > 0:
-                        enemy.setHealth(enemy.getHealth() - 1)
-                        if enemy.getHealth() == 0:
-                            score = score + ENEMY_SCORE
+                    if (enemy.getX(), enemy.getY()) == (X, Y):
+                        if enemy.getHealth() > 0:
+                            enemy.setHealth(enemy.getHealth() - 1)
+                            if enemy.getHealth() == 0:
+                                score = score + ENEMY_SCORE
 
-                # Decrement the health of the BomberMan if he is in range of the explosion
-                if (X, Y) == (bomber.getX(), bomber.getY()) and bomber.getHealth() > 0:
-                    bomber.setHealth(bomber.getHealth() - 1)
+                # Decrement the health of the BomberMan if he is in range of
+                # the explosion
+                if (X, Y) == (bomber.getX(), bomber.getY()):
+                    if bomber.getHealth() > 0:
+                        bomber.setHealth(bomber.getHealth() - 1)
 
         return score

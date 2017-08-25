@@ -25,10 +25,12 @@ class Game:
         self.__previousGameTime = time()
         self.__powerUps = []
 
-        # Object of the board class that contains the board details for the current game
+        # Object of the board class that contains the board details for the
+        # current game
         self.__board = Board(BOARD_HEIGHT, BOARD_WIDTH)
 
-        # Object of the bomber class that contains the details for the bomberman for the current game
+        # Object of the bomber class that contains the details for the
+        # bomberman for the current game
         self.__bomber = Bomber(START_X, START_Y)
         self.__board.reset(self.__bomber, [], [], '', [])
 
@@ -53,16 +55,16 @@ class Game:
             (X, Y) = self.__board.getRandomEmpty()
             newEnemy = Enemy(X, Y, levelDetails[2], levelDetails[4], time())
             self.__enemies.append(newEnemy)
-            self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
+            self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                               '', [])
 
         # Add enemies with double health
         for i in range(levelDetails[1]):
             (X, Y) = self.__board.getRandomEmpty()
             newEnemy = Enemy(X, Y, levelDetails[3], levelDetails[5], time())
             self.__enemies.append(newEnemy)
-            self.__board.reset(self.__bomber, self.__enemies, self.__bricks, '', [])
-
-        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+            self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                               '', [])
 
     # Getter functions
 
@@ -79,7 +81,8 @@ class Game:
         return self.__gameTime
 
     def show(self):
-        self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+        self.__board.show(self.__level, self.__lives, self.__gameTime,
+                          self.__score)
 
     # To increment available lives for the player
     def addLife(self):
@@ -101,34 +104,35 @@ class Game:
     def moveEnemies(self):
         current_time = time()
         for enemy in self.__enemies:
-            if current_time - enemy.getPrevTime() > enemy.getSpeed() and enemy.getHealth():
+            if current_time - enemy.getPrevTime() > enemy.getSpeed():
+                if enemy.getHealth():
 
-                (X, Y) = (enemy.getX(), enemy.getY())
-                arr = []
+                    (X, Y) = (enemy.getX(), enemy.getY())
+                    arr = []
 
-                if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
-                    arr.append((-OBJECT_HEIGHT, 0))
+                    if self.__board.isEmpty(X - OBJECT_HEIGHT, Y):
+                        arr.append((-OBJECT_HEIGHT, 0))
 
-                if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
-                    arr.append((OBJECT_HEIGHT, 0))
+                    if self.__board.isEmpty(X + OBJECT_HEIGHT, Y):
+                        arr.append((OBJECT_HEIGHT, 0))
 
-                if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
-                    arr.append((0, -OBJECT_WIDTH))
+                    if self.__board.isEmpty(X, Y - OBJECT_WIDTH):
+                        arr.append((0, -OBJECT_WIDTH))
 
-                if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
-                    arr.append((0, OBJECT_WIDTH))
+                    if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
+                        arr.append((0, OBJECT_WIDTH))
 
-                if len(arr) == 0:
-                    pass
-                else:
-                    idx = arr[randint(0, len(arr) - 1)]
-                    (x, y) = idx
-                    enemy.move(X + x, Y + y)
+                    if len(arr) == 0:
+                        pass
+                    else:
+                        idx = arr[randint(0, len(arr) - 1)]
+                        (x, y) = idx
+                        enemy.move(X + x, Y + y)
 
-                enemy.setPrevTime(current_time)
-                self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-
-        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+                    enemy.setPrevTime(current_time)
+                    self.__board.reset(self.__bomber, self.__enemies,
+                                       self.__bricks, self.__bomb,
+                                       self.__powerUps)
 
     # Move the bomber in the specified direction if possible
     def moveBomber(self, direction):
@@ -150,34 +154,44 @@ class Game:
             if self.__board.isEmpty(X, Y + OBJECT_WIDTH):
                 self.__bomber.move(X, Y + OBJECT_WIDTH)
 
-        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                           self.__bomb, self.__powerUps)
 
-    # Check whether the BomberMan is in the same cell with an enemy, powerup, or explosion
+    # Check whether the BomberMan is in the same cell with an enemy, powerup,
+    # or explosion
     def checkSameCell(self):
 
         for powerUp in self.__powerUps:
             if powerUp.isActive():
-                if (self.__bomber.getX(), self.__bomber.getY()) == (powerUp.getX(), powerUp.getY()):
+                (X, Y) = (self.__bomber.getX(), self.__bomber.getY())
+                (x, y) = (powerUp.getX(), powerUp.getY())
+                if (X, Y) == (x, y):
                     powerUp.setInActive()
                     self.__lives = self.__lives + 1
-        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
-        # self.__board.show(self.__level, self.__lives, self.__gameTime, self.__score)
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                           self.__bomb, self.__powerUps)
 
         for enemy in self.__enemies:
-            if enemy.getX() == self.__bomber.getX() and enemy.getY() == self.__bomber.getY() and enemy.getHealth():
+            (X, Y) = (enemy.getX(), enemy.getY())
+            (x, y) = (self.__bomber.getX(), self.__bomber.getY())
+            if (X, Y) == (x, y) and enemy.getHealth():
                 health = self.__bomber.getHealth()
                 self.__bomber.setHealth(health - 1)
 
     def plantBomb(self):
         self.__bomb.plantBomb(self.__bomber.getX(), self.__bomber.getY())
-        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                           self.__bomb, self.__powerUps)
 
     def checkBlast(self):
         self.__bomb.checkBlast()
         if self.__bomb.getShowBlast() and self.__bomb.isActive():
-            self.__score = self.__bomb.update(self.__bomber, self.__board, self.__bricks, self.__enemies, self.__score)
+            self.__score = self.__bomb.update(self.__bomber, self.__board,
+                                              self.__bricks, self.__enemies,
+                                              self.__score)
             self.__bomb.makeInactive()
-        self.__board.reset(self.__bomber, self.__enemies, self.__bricks, self.__bomb, self.__powerUps)
+        self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
+                           self.__bomb, self.__powerUps)
 
     # Check whether the game should end now
     # 0 -> going on
@@ -192,8 +206,12 @@ class Game:
             if enemy.getHealth():
                 return 0
         for brick in self.__bricks:
-            if (brick.getX(), brick.getY()) == (self.__bomber.getX(), self.__bomber.getY()) and brick.checkDestroyed() and brick.checkExit():
-                return 2
+            (X, Y) = (brick.getX(), brick.getY())
+            (x, y) = (self.__bomber.getX(), self.__bomber.getY())
+
+            if (X, Y) == (x, y) and brick.checkDestroyed():
+                if brick.checkExit():
+                    return 2
         return 0
 
 
@@ -212,18 +230,19 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
         current_time = time()
         seconds = current_time - previous_bomber
 
-        if INPUT.kbhit():
+        if INPUT.checkStream():
             if seconds > BOMBER_TIME:
-                x = INPUT.getch()
+                x = INPUT.getFromStream()
                 if x == 'w'or x == 'a' or x == 's' or x == 'd':
                     game.moveBomber(x)
                 elif x == 'b':
                     game.plantBomb()
                 elif x == 'q':
+                    
                     exit(0)
                 elif x == 'p':
                     game.addLife()
-            INPUT.flush()
+            INPUT.clearStream()
             previous_bomber = current_time
 
         game.moveEnemies()

@@ -1,26 +1,26 @@
-import sys
-import termios
+from sys import stdin
+from termios import tcgetattr, ICANON, ECHO, tcsetattr, TCSAFLUSH, tcflush, TCIFLUSH, TCSANOW
 from select import select
 
 
 class Input:
 
     def __init__(self):
-        self.__fileDescriptor = sys.stdin.fileno()
-        self.__newTerm = termios.tcgetattr(self.__fileDescriptor)
-        self.__oldTerm = termios.tcgetattr(self.__fileDescriptor)
-        self.__newTerm[3] = (self.__newTerm[3] & ~termios.ICANON & ~termios.ECHO)
-        termios.tcsetattr(self.__fileDescriptor, termios.TCSAFLUSH, self.__newTerm)
+        self.__fd = stdin.fileno()
+        self.__new = tcgetattr(self.__fd)
+        self.__old = tcgetattr(self.__fd)
+        self.__new[3] = (self.__new[3] & ~ICANON & ~ECHO)
+        tcsetattr(self.__fd, TCSAFLUSH, self.__new)
 
-    def kbhit(self):
-        dr, dw, de = select([sys.stdin], [], [], 0)
-        return dr != []
+    def checkStream(self):
+        X, Y, Z = select([stdin], [], [], 0)
+        return len(X) != 0
 
-    def getch(self):
-        return sys.stdin.read(1)
+    def getFromStream(self):
+        return stdin.read(1)
 
-    def flush(self):
-        termios.tcflush(self.__fileDescriptor, termios.TCIFLUSH)
+    def clearStream(self):
+        tcflush(self.__fd, TCIFLUSH)
 
     def __del__(self):
-        termios.tcsetattr(self.__fileDescriptor, termios.TCSANOW, self.__oldTerm)
+        tcsetattr(self.__fd, TCSANOW, self.__old)
