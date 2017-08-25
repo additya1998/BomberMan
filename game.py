@@ -166,7 +166,7 @@ class Game:
                 (X, Y) = (self.__bomber.getX(), self.__bomber.getY())
                 (x, y) = (powerUp.getX(), powerUp.getY())
                 if (X, Y) == (x, y):
-                    powerUp.setInActive()
+                    powerUp.setInactive()
                     self.__lives = self.__lives + 1
         self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
                            self.__bomb, self.__powerUps)
@@ -189,7 +189,7 @@ class Game:
             self.__score = self.__bomb.update(self.__bomber, self.__board,
                                               self.__bricks, self.__enemies,
                                               self.__score)
-            self.__bomb.makeInactive()
+            self.__bomb.setInactive()
         self.__board.reset(self.__bomber, self.__enemies, self.__bricks,
                            self.__bomb, self.__powerUps)
 
@@ -238,7 +238,6 @@ def startNewGame(currentLevel, gamesLeft, previousScore):
                 elif x == 'b':
                     game.plantBomb()
                 elif x == 'q':
-                    
                     exit(0)
                 elif x == 'p':
                     game.addLife()

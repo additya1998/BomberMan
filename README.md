@@ -1,5 +1,7 @@
 BOMBER MAN
 
+All the OOPs principles and guidelines have been followed in this project. Also, pep8 has been run against all the files without any errors or warnings. Also, all constants like number of bricks, level details, points, symbols, colours, dimensions are editable from the config and are not hardcoded anywhere in the code in order to make modifying easier.
+
 Controls:
 	'w' - Move up
 	'a' - Move left
@@ -40,8 +42,8 @@ Winning:
 	given time frame to cross a level.
 	The user wins the game when he crosses all the 6 levels.
 
-Loosing:
-	User looses the game when he looses all his lives.
+Losing:
+	User looses the game when he loses all his lives.
 
 Classes Used:
 	1. Board
@@ -60,7 +62,7 @@ Encapsulation:
 	No class function can access or directly modify any data member of another class, all data members and some functions are private to their own class.
 	
 Polymorphism:
-	Many classes have functions with same names and parameters, so it does not matter on the class on whose instance it has been called. 
+	Many classes have functions with same names and parameters, so it does not matter on the class on whose instance it has been called like the setInactive and isActive function in the powerup and bomb classes. 
 
 Modularity:
 	The code is organized into various modules i.e classes which in turn are a component and different components are independent of each other up to a certain extent.
