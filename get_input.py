@@ -1,5 +1,6 @@
 from sys import stdin
-from termios import tcgetattr, ICANON, ECHO, tcsetattr, TCSAFLUSH, tcflush, TCIFLUSH, TCSANOW
+from termios import tcgetattr, ICANON, ECHO, tcsetattr, TCSAFLUSH, tcflush
+from termios import TCIFLUSH, TCSANOW
 from select import select
 
 

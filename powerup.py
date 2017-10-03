@@ -1,6 +1,6 @@
 from time import time
 from config import POWER_UP_LENGTH
-from position import*
+from position import *
 
 
 # Class to manage the time of spawned power-ups
@@ -22,5 +22,5 @@ class PowerUp(Position):
     def isActive(self):
         return self.__active
 
-    def setInActive(self):
+    def setInactive(self):
         self.__active = 0

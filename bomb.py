@@ -35,7 +35,7 @@ class Bomb(Position):
     def isActive(self):
         return self.__active
 
-    def makeInactive(self):
+    def setInactive(self):
         self.__active = 0
 
     def getShowBlast(self):
